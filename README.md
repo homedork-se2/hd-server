@@ -1,4 +1,4 @@
-# HOMEDORK DATABASE SERVER
+# HOMEDORK's DATABASE SERVER
 * Handles/processes queries sent from homedork's API.
 * Uses mysql database & maven(for dependency management)
 * Encrypted traffic to and fro.
