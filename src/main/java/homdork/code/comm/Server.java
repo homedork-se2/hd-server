@@ -1,4 +1,16 @@
 package homdork.code.comm;
 
-public class Server {
+import java.net.Socket;
+
+public class Server extends Thread {
+    Socket client = null;
+
+    public Server(Socket clientSocket) {
+        this.client = clientSocket;
+    }
+
+    @Override
+    public void run() {
+        //
+    }
 }
