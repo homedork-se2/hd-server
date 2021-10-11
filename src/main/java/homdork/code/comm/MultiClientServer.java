@@ -12,13 +12,13 @@ public class MultiClientServer extends Thread {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(portNumber);
-            System.out.println("[LOG] Server Socket has been created.");
+            System.out.println("[LOG] Server Socket has successfully been created.");
         } catch (IOException e) {
             System.out.println("[ERROR] There was an error when listening at port number: " + portNumber);
             System.exit(-1);
         }
 
-        Socket clientSocket = null;
+        Socket clientSocket;
         while (true) {
             try {
                 clientSocket = serverSocket.accept();
