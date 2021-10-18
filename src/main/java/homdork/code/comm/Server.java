@@ -1,5 +1,6 @@
 package homdork.code.comm;
 
+import homdork.code.data.SQLConnector;
 import homdork.code.security.CryptoHandler;
 
 import java.io.*;
@@ -45,7 +46,11 @@ public class Server extends Thread {
                 //Print the decrypted message on console
                 System.out.println("[DECRYPTED/READ]: " + message);
 
-                //Return string to the client
+                //Perform query
+                SQLConnector sqlConnector = new SQLConnector();
+                // ...
+
+                //Send return code & string of message to the client
                 outputStream.writeBytes("status code: 200-" + message + "\r\n");
                 outputStream.flush();
 
