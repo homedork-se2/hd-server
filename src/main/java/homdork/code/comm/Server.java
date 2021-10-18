@@ -1,5 +1,7 @@
 package homdork.code.comm;
 
+import homdork.code.security.CryptoHandler;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -21,34 +23,27 @@ public class Server extends Thread {
     public void run() {
         try {
             testCommunication();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void testCommunication() throws IOException {
+    public void testCommunication() throws Exception {
         boolean running = true;
-        BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
+        BufferedInputStream bis = new BufferedInputStream(client.getInputStream());
         do {
             try {
-                StringBuilder sb = new StringBuilder();
-                String readLine = br.readLine();
+                byte[] encryptedMessage = bis.readAllBytes();
 
-                System.out.println("Client says: " + readLine);
+                //Decrypt encryptedMessage
+                CryptoHandler cryptoHandler = new CryptoHandler();
+                String message = cryptoHandler.aesDecrypt(encryptedMessage);
 
-                // Return reversed string to client
-                String reversed = String.valueOf(sb.append(readLine).reverse());
-                System.out.println("Sending: " + reversed);
-                
-                outputStream.writeBytes("status code: 200-" + reversed + "\r\n");
+                System.out.println("READ: " + message);
+                //Return string
+                outputStream.writeBytes("status code: 200-" + message + "\r\n");
                 outputStream.flush();
 
-                if (readLine.equalsIgnoreCase("end")) {
-                    client.close();
-                    running = false;
-                    System.out.println("[SERVER] Exiting...");
-                }
             } catch (SocketException e) {
                 running = false;
                 System.out.println("[ERROR] Client disconnected.");
