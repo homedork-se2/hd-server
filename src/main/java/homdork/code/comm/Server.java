@@ -31,16 +31,21 @@ public class Server extends Thread {
     public void testCommunication() throws Exception {
         boolean running = true;
         BufferedInputStream bis = new BufferedInputStream(client.getInputStream());
+        CryptoHandler cryptoHandler = new CryptoHandler();
+
         do {
             try {
+                //Read all bytes from the message
                 byte[] encryptedMessage = bis.readAllBytes();
 
                 //Decrypt encryptedMessage
-                CryptoHandler cryptoHandler = new CryptoHandler();
+                cryptoHandler.setUpCipher();
                 String message = cryptoHandler.aesDecrypt(encryptedMessage);
 
-                System.out.println("READ: " + message);
-                //Return string
+                //Print the decrypted message on console
+                System.out.println("[DECRYPTED/READ]: " + message);
+
+                //Return string to the client
                 outputStream.writeBytes("status code: 200-" + message + "\r\n");
                 outputStream.flush();
 

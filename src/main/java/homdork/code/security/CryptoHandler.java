@@ -18,6 +18,10 @@ public class CryptoHandler {
     byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
 
+    public void setUpCipher() throws Exception{
+        cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+    }
+
     public String aesDecrypt(byte[] cipherText) throws Exception {
         String encryptedString;
         byte[] encryptText = null;
