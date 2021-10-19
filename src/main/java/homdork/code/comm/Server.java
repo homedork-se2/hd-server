@@ -1,6 +1,8 @@
 package homdork.code.comm;
 
+import com.google.gson.Gson;
 import homdork.code.data.SQLHandler;
+import homdork.code.model.User;
 import homdork.code.security.CryptoHandler;
 
 import java.io.*;
@@ -53,7 +55,48 @@ public class Server extends Thread {
 
                 //Parse the query, check if insert, select etc.
                 if (message.contains("INSERT") && message.contains("users")) {
+                    System.out.println("[LOG] Entered insert handler.");
+                    //Update handler to update the table, because were inserting
                     sqlHandler.updateHandler(message);
+
+                    //Get the UUID
+                    StringBuilder builder = new StringBuilder();
+                    boolean isParenthesis = false;
+                    for (char c : message.toCharArray()) {
+                        if (c == '\'' || isParenthesis) {
+                            if (isParenthesis) {
+                                if (c != '\'') {
+                                    builder.append(c);
+                                }
+                            }
+                            isParenthesis = true;
+                        }
+                    }
+                    String[] parts = builder.toString().split(",");
+                    String userID = parts[0];
+                    System.out.println("USERID: " + userID);
+
+                    //Select user with the UUID
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(userID);
+                    if (resultSet.next()) {
+                        String uuid = resultSet.getString("uuid");
+                        String name = resultSet.getString("name");
+                        String email = resultSet.getString("email");
+
+                        //make user model, use json to make an object based on that above ^
+                        User user = new User(name, email, uuid);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user, User.class);
+                        System.out.println("UUID: " + uuid);
+                        System.out.println("JSON: " + json);
+                        outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+                        outputStream.flush();
+                    }
+
+
+                } else if (message.contains("UPDATE") && message.contains("users")) {
+
+                } else if (message.contains("SELECT") && message.contains("users")) {
 
                     StringBuilder builder = new StringBuilder();
                     boolean ifPar = false;
@@ -67,18 +110,6 @@ public class Server extends Thread {
                     String userID = parts[0];
                     System.out.println("USERID: " + userID);
                     ResultSet resultSet = sqlHandler.selectUsersWhereUUD(userID);
-                    if (resultSet.next()) {
-                        String uuid = resultSet.getString("uuid");
-                        String name = resultSet.getString("name");
-                        String email = resultSet.getString("email");
-
-                        //make user model, use json to make an object based on that above ^
-
-                        System.out.println(uuid + " " + name);
-                    }
-                } else if (message.contains("UPDATE") && message.contains("users")) {
-
-                } else if (message.contains("SELECT") && message.contains("users")) {
 
                 } else if (message.contains("SELECT") && message.contains("devices")) {
 

@@ -27,7 +27,7 @@ public class SQLHandler {
     }
 
     public ResultSet selectUsersWhereUUD(String id) throws SQLException {
-        String query = "SELECT * FROM `users` WHERE uuid =" + id + ";";
+        String query = "SELECT * FROM `users` WHERE uuid ='" + id + "';";
         return selectHandler(query);
     }
 
