@@ -6,8 +6,8 @@ public class SQLConnector {
 
     private final String database = "homedork";
     private final String portNumber = "3306";
-    private final String username = "admin";
-    private final String password = "Ed5!_3nNLzwI";
+    private final String username = "root";
+    private final String password = "root";
 
     Connection connection;
     Statement statement;
@@ -15,20 +15,20 @@ public class SQLConnector {
     PreparedStatement preparedStatement;
 
     public SQLConnector() {
-        connect();
+
     }
 
     // Connect to the database
-    public void connect() {
+    public Connection connect() {
         try {
-            System.out.println("Connection successfully established..");
             String url = "jdbc:mysql://localhost:" + portNumber + "/" + database + "?user=" + username + "&password=" + password + "&serverTimezone=UTC";
             connection = DriverManager.getConnection(url);
+            System.out.println("Connection successfully established..");
 
         } catch (SQLException sq) {
-            sq.printStackTrace();
-            System.out.println(sq.getMessage());
+            System.out.println("[ERROR]: Could not connect to the database. Make sure the credentials are correct.");
         }
+        return connection;
     }
 
     // Disconnect from the database
