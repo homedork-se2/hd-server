@@ -98,6 +98,25 @@ public class Server extends Thread {
 
 
                 } else if (message.contains("UPDATE") && message.contains("users")) {
+                    System.out.println("[LOG] Entered update handler.");
+                    sqlHandler.updateHandler(message);
+
+                    //Select user with the UUID
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(getUUIDfromMessage(message));
+                    if (resultSet.next()) {
+                        String uuid = resultSet.getString("uuid");
+                        String name = resultSet.getString("name");
+                        String email = resultSet.getString("email");
+
+                        //make user model, use json to make an object based on that above ^
+                        User user = new User(name, email, uuid);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user, User.class);
+                        System.out.println("UUID: " + uuid);
+                        System.out.println("JSON: " + json);
+                        outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+                        outputStream.flush();
+                    }
 
                 } else if (message.contains("SELECT") && message.contains("users")) {
                     System.out.println("[LOG] Entered select handler.");
@@ -123,16 +142,6 @@ public class Server extends Thread {
                 } else if (message.contains("UPDATE") && message.contains("devices")) {
 
                 } else if (message.contains("INSERT") && message.contains("devices")) {
-                    //insert new device, get uuid of device
-
-                    StringBuilder builder = new StringBuilder();
-                    for (char c : message.toCharArray()) {
-                        if (c == '(') {
-                            builder.append(c);
-                        }
-                    }
-                    String[] parts = builder.toString().split(",");
-                    String deviceID = parts[0];
 
                 }
 
