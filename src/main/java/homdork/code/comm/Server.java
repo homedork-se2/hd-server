@@ -33,6 +33,26 @@ public class Server extends Thread {
         }
     }
 
+    public String getUUIDfromMessage(String message) {
+        //Get the UUID
+        StringBuilder builder = new StringBuilder();
+        boolean isParenthesis = false;
+        for (char c : message.toCharArray()) {
+            if (c == '\'' || isParenthesis) {
+                if (isParenthesis) {
+                    if (c != '\'') {
+                        builder.append(c);
+                    }
+                }
+                isParenthesis = true;
+            }
+        }
+        String[] parts = builder.toString().split(",");
+        String userID = parts[0];
+        System.out.println("USERID: " + userID);
+        return userID;
+    }
+
     public void testCommunication() throws Exception {
         boolean running = true;
         BufferedReader bis = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -59,25 +79,8 @@ public class Server extends Thread {
                     //Update handler to update the table, because were inserting
                     sqlHandler.updateHandler(message);
 
-                    //Get the UUID
-                    StringBuilder builder = new StringBuilder();
-                    boolean isParenthesis = false;
-                    for (char c : message.toCharArray()) {
-                        if (c == '\'' || isParenthesis) {
-                            if (isParenthesis) {
-                                if (c != '\'') {
-                                    builder.append(c);
-                                }
-                            }
-                            isParenthesis = true;
-                        }
-                    }
-                    String[] parts = builder.toString().split(",");
-                    String userID = parts[0];
-                    System.out.println("USERID: " + userID);
-
                     //Select user with the UUID
-                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(userID);
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(getUUIDfromMessage(message));
                     if (resultSet.next()) {
                         String uuid = resultSet.getString("uuid");
                         String name = resultSet.getString("name");
@@ -97,19 +100,23 @@ public class Server extends Thread {
                 } else if (message.contains("UPDATE") && message.contains("users")) {
 
                 } else if (message.contains("SELECT") && message.contains("users")) {
+                    System.out.println("[LOG] Entered select handler.");
+                    //Select user with the UUID
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(getUUIDfromMessage(message));
+                    if (resultSet.next()) {
+                        String uuid = resultSet.getString("uuid");
+                        String name = resultSet.getString("name");
+                        String email = resultSet.getString("email");
 
-                    StringBuilder builder = new StringBuilder();
-                    boolean ifPar = false;
-                    for (char c : message.toCharArray()) {
-                        if (c == '\'' || ifPar) {
-                            ifPar = true;
-                            builder.append(c);
-                        }
+                        //make user model, use json to make an object based on that above ^
+                        User user = new User(name, email, uuid);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user, User.class);
+                        System.out.println("UUID: " + uuid);
+                        System.out.println("JSON: " + json);
+                        outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+                        outputStream.flush();
                     }
-                    String[] parts = builder.toString().split(",");
-                    String userID = parts[0];
-                    System.out.println("USERID: " + userID);
-                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(userID);
 
                 } else if (message.contains("SELECT") && message.contains("devices")) {
 
