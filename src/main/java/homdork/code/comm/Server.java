@@ -1,8 +1,15 @@
 package homdork.code.comm;
 
+import com.google.gson.Gson;
+import homdork.code.data.SQLHandler;
+import homdork.code.model.User;
+import homdork.code.security.CryptoHandler;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
 
 public class Server extends Thread {
     Socket client;
@@ -21,34 +28,127 @@ public class Server extends Thread {
     public void run() {
         try {
             testCommunication();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void testCommunication() throws IOException {
+    public String getUUIDfromMessage(String message) {
+        //Get the UUID
+        StringBuilder builder = new StringBuilder();
+        boolean isParenthesis = false;
+        for (char c : message.toCharArray()) {
+            if (c == '\'' || isParenthesis) {
+                if (isParenthesis) {
+                    if (c != '\'') {
+                        builder.append(c);
+                    }
+                }
+                isParenthesis = true;
+            }
+        }
+        String[] parts = builder.toString().split(",");
+        String userID = parts[0];
+        System.out.println("USERID: " + userID);
+        return userID;
+    }
+
+    public void testCommunication() throws Exception {
         boolean running = true;
-        BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        BufferedReader bis = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        CryptoHandler cryptoHandler = new CryptoHandler();
+        SQLHandler sqlHandler = new SQLHandler();
 
         do {
             try {
-                StringBuilder sb = new StringBuilder();
-                String readLine = br.readLine();
+                //Read all bytes from the message
+                String encryptedMessage = bis.readLine();
+                byte[] byteArray = encryptedMessage.getBytes(StandardCharsets.UTF_8);
 
-                System.out.println("Client says: " + readLine);
+                //Decrypt encryptedMessage and print it
+                cryptoHandler.setUpCipher();
+                String message = cryptoHandler.aesDecrypt(byteArray);
+                System.out.println("[DECRYPTED/READ]: " + message);
 
-                // Return reversed string to client
-                String reversed = String.valueOf(sb.append(readLine).reverse());
-                System.out.println("Sending: " + reversed);
-                
-                outputStream.writeBytes("status code: 200-" + reversed + "\r\n");
+                //Perform query
+                sqlHandler.setUp();
+
+                //Parse the query, check if insert, select etc.
+                if (message.contains("INSERT") && message.contains("users")) {
+                    System.out.println("[LOG] Entered insert handler.");
+                    //Update handler to update the table, because were inserting
+                    sqlHandler.updateHandler(message);
+
+                    //Select user with the UUID
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(getUUIDfromMessage(message));
+                    if (resultSet.next()) {
+                        String uuid = resultSet.getString("uuid");
+                        String name = resultSet.getString("name");
+                        String email = resultSet.getString("email");
+
+                        //make user model, use json to make an object based on that above ^
+                        User user = new User(name, email, uuid);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user, User.class);
+                        System.out.println("UUID: " + uuid);
+                        System.out.println("JSON: " + json);
+                        outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+                        outputStream.flush();
+                    }
+
+
+                } else if (message.contains("UPDATE") && message.contains("users")) {
+                    System.out.println("[LOG] Entered update handler.");
+                    sqlHandler.updateHandler(message);
+
+                    //Select user with the UUID
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(getUUIDfromMessage(message));
+                    if (resultSet.next()) {
+                        String uuid = resultSet.getString("uuid");
+                        String name = resultSet.getString("name");
+                        String email = resultSet.getString("email");
+
+                        //make user model, use json to make an object based on that above ^
+                        User user = new User(name, email, uuid);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user, User.class);
+                        System.out.println("UUID: " + uuid);
+                        System.out.println("JSON: " + json);
+                        outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+                        outputStream.flush();
+                    }
+
+                } else if (message.contains("SELECT") && message.contains("users")) {
+                    System.out.println("[LOG] Entered select handler.");
+                    //Select user with the UUID
+                    ResultSet resultSet = sqlHandler.selectUsersWhereUUD(getUUIDfromMessage(message));
+                    if (resultSet.next()) {
+                        String uuid = resultSet.getString("uuid");
+                        String name = resultSet.getString("name");
+                        String email = resultSet.getString("email");
+
+                        //make user model, use json to make an object based on that above ^
+                        User user = new User(name, email, uuid);
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user, User.class);
+                        System.out.println("UUID: " + uuid);
+                        System.out.println("JSON: " + json);
+                        outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+                        outputStream.flush();
+                    }
+
+                } else if (message.contains("SELECT") && message.contains("devices")) {
+
+                } else if (message.contains("UPDATE") && message.contains("devices")) {
+
+                } else if (message.contains("INSERT") && message.contains("devices")) {
+
+                }
+
+                //Send return code & string of encrypted message to the client
+                outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(message) + "\r\n");
                 outputStream.flush();
 
-                if (readLine.equalsIgnoreCase("end")) {
-                    client.close();
-                    running = false;
-                    System.out.println("[SERVER] Exiting...");
-                }
             } catch (SocketException e) {
                 running = false;
                 System.out.println("[ERROR] Client disconnected.");
