@@ -85,7 +85,7 @@ public class Server extends Thread {
 	void retrieveReturnUser(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler) throws Exception {
 		ResultSet resultSet = sqlHandler.selectUserWhereUUID(getUUIDFromMessage(message));
 		if(resultSet.next()) {
-			String uuid = resultSet.getString("uuid");
+			String uuid = resultSet.getString("id");
 			String name = resultSet.getString("name");
 			String email = resultSet.getString("email");
 
@@ -201,10 +201,10 @@ public class Server extends Thread {
 		try {
 			ResultSet resultSet = sqlHandler.selectDeviceWhereUUID(getDeviceId(message));
 			if(resultSet.next()) {
-				String deviceId = resultSet.getString("uuid");
+				String deviceId = resultSet.getString("id");
 				String type = resultSet.getString("type");
 				String state = resultSet.getString("state");
-				String userID = resultSet.getString("users_uuid");
+				String userID = resultSet.getString("users_id");
 				double level = resultSet.getDouble("level");
 
 				switch (type) {
