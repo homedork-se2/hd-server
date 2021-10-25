@@ -1,4 +1,5 @@
 package homdork.code.model;
 
-public class Light {
+public enum State {
+	OFF, ON
 }

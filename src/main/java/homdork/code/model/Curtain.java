@@ -2,12 +2,10 @@ package homdork.code.model;
 
 import java.util.UUID;
 
-public class Fan extends Device {
+public class Curtain extends Device {
 
-	public Fan(String id) {
+	public Curtain(String id) {
 		this.id = id;
 		this.state = State.OFF;
 	}
-
-
 }
