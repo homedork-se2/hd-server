@@ -36,10 +36,10 @@ public class SQLHandler {
 	}
 
 	// change uuid to deviceId in DB
-    public ResultSet selectDeviceWhereUUID(String id) throws SQLException {
-        String query = "SELECT * FROM `devices` WHERE uuid ='" + id + "';";
-        return selectHandler(query);
-    }
+	public ResultSet selectDeviceWhereUUID(String id) throws SQLException {
+		String query = "SELECT * FROM `devices` WHERE uuid ='" + id + "';";
+		return selectHandler(query);
+	}
 
 	public void createUser() {
 		try {
