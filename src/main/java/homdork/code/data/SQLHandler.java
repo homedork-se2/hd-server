@@ -1,23 +1,30 @@
 package homdork.code.data;
 
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SQLHandler {
 
 	Connection connection;
 	Statement statement;
 	ResultSet resultSet;
-	PreparedStatement preparedStatement;
 
-	public void setUp() {
+	public void setUp() throws IOException {
 		SQLConnector sqlConnector = new SQLConnector();
 		connection = sqlConnector.connect();
 	}
 
+	/**
+	 * @param query select query on either `users` or `devices` table.
+	 * @return result set of selected
+	 * @throws SQLException -
+	 */
 	public ResultSet selectHandler(String query) throws SQLException {
 		statement = connection.createStatement();
 		resultSet = statement.executeQuery(query);
-
 		return resultSet;
 	}
 
