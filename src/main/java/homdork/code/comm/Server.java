@@ -11,7 +11,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +25,12 @@ public class Server extends Thread {
 	DataInputStream inputStream;
 	BufferedReader reader;
 	Logger logger;
+	String hubAddress;
+	String deviceId;
+	double level;
+	SQLHandler sqlHandler;
+
+	Map<String, Client> connectedClients = ServerMain.getMap();
 
 	public Server(Socket clientSocket) throws IOException {
 		this.client = clientSocket;
@@ -124,7 +132,7 @@ public class Server extends Thread {
 		boolean running = true;
 		BufferedReader bis = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		CryptoHandler cryptoHandler = new CryptoHandler();
-		SQLHandler sqlHandler = new SQLHandler();
+		sqlHandler = new SQLHandler();
 
 		FileHandler fileHandler;
 
@@ -165,7 +173,7 @@ public class Server extends Thread {
 
 						//save new user[1]
 						sqlHandler.updateHandler(message);
-						logger.log(Level.INFO, "INSERT USER QUERY EXECUTED");
+						logger.log(Level.INFO, "INSERT USER QUERY SENT");
 
 						//select new saved user in [1] and write to output stream
 						retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler);
@@ -176,7 +184,7 @@ public class Server extends Thread {
 
 						//update user[1]
 						sqlHandler.updateHandler(message);
-						logger.log(Level.INFO, "UPDATE USER QUERY EXECUTED");
+						logger.log(Level.INFO, "UPDATE USER QUERY SENT");
 
 						//select newly updated user in [1] and write to output stream
 						retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler);
@@ -202,17 +210,21 @@ public class Server extends Thread {
 
 						//update user[1]
 						sqlHandler.updateHandler(message);
-						logger.log(Level.INFO, "UPDATE DEVICE QUERY EXECUTED");
+						logger.log(Level.INFO, "UPDATE DEVICE QUERY SENT");
 
 						// select newly updated device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
+
+						// communication with local hub
+						sendDeviceCommandToHub(message, cryptoHandler);
+
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						System.out.println("[LOG] Entered insert handler.");
 						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
 
 						//update user[1]
 						sqlHandler.updateHandler(message);
-						logger.log(Level.INFO, "INSERT DEVICE QUERY EXECUTED");
+						logger.log(Level.INFO, "INSERT DEVICE QUERY SENT");
 
 						//select new saved device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
@@ -224,11 +236,15 @@ public class Server extends Thread {
 				} else {
 					// client = Local Hub
 
-					// physical change in device state
-					// add new device
-					// client device operations like turn lamp off are handled up in the else if
-				}
+					// physical change in device state -- requires DB update
+					// add new device -- synced with UI add, requires DB update(INSERT) (2nd half)
+					// client device operations like turn lamp off are handled up in the else if -- ^^
 
+					// [D:deviceID:ON or level:userID]
+					if(message.contains("D:")) {
+						handleDeviceOperation(message.substring(2));
+					}
+				}
 
 			} catch (SocketException e) {
 				running = false;
@@ -239,17 +255,51 @@ public class Server extends Thread {
 
 	}
 
+	private void handleDeviceOperation(String substring) throws SQLException {
+		logger.log(Level.INFO,"LOCAL HUB OPERATION");
+		String[] parts = substring.split(":");
+		String deviceID = parts[0];
+		String userID = parts[2];
+
+		String op = parts[1];
+		double level = 9999;
+		if(!op.contains("ON") || !op.contains("OFF")){
+			level = Double.parseDouble(op);
+		}
+
+		if(level == 9999) {
+			String q;
+			if(op.equals("ON")) {
+				logger.log(Level.INFO,"DEVICE TURN ON");
+				q = String.format("UPDATE devices SET state='on' WHERE deviceId='%s'", deviceID);
+			} else {
+				logger.log(Level.INFO,"DEVICE TURN OFF");
+				q = String.format("UPDATE devices SET state='off' WHERE deviceId='%s'", deviceID);
+			}
+			sqlHandler.updateHandler(q);
+
+		} else {
+			String query = String.format("UPDATE devices SET state='on' AND level='%f' WHERE deviceId='%s' AND WHERE userId='%s';", level, deviceID, userID);
+			sqlHandler.updateHandler(query);
+		}
+
+		logger.log(Level.INFO, "UPDATE DEVICE QUERY SENT");
+	}
+
+
 	private void retrieveReturnDevice(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler) {
 
 		try {
 			ResultSet resultSet = sqlHandler.selectDeviceWhereUUID(getDeviceId(message));
 			if(resultSet.next()) {
 				logger.log(Level.INFO, "RESULT SET RECEIVED");
-				String deviceId = resultSet.getString("id");
+				deviceId = resultSet.getString("id");
 				String type = resultSet.getString("type");
 				String state = resultSet.getString("state");
 				String userID = resultSet.getString("users_id");
-				double level = resultSet.getDouble("level");
+				level = resultSet.getDouble("level");
+				// new
+				hubAddress = resultSet.getString("hub_address");
 
 				switch (type) {
 					case "FAN" -> {
@@ -313,12 +363,37 @@ public class Server extends Thread {
 
 	}
 
-
 	void write(Object objectClass, DataOutputStream outputStream, CryptoHandler cryptoHandler) throws Exception {
 		String json = new GsonBuilder().setPrettyPrinting().create().toJson(objectClass, objectClass.getClass());
 		System.out.println(json);
 		outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 		outputStream.flush();
 		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+	}
+
+	void sendDeviceCommandToHub(String message, CryptoHandler cryptoHandler) throws Exception {
+		Client c = connectedClients.get(hubAddress);
+
+		Socket socket = c.getSocket();
+		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+
+		// turn device off
+		if(message.contains("state='off'")) {
+			String m = String.format("D:'%s':OFF", deviceId);
+			dos.writeBytes(cryptoHandler.aesEncrypt(m) + "\r\n");
+
+
+		} // sliding
+		else if(message.contains("level") && message.contains("state='on'")) {
+			String m = String.format("D:'%s':'%f'", deviceId, level);
+			dos.writeBytes(cryptoHandler.aesEncrypt(m) + "\r\n");
+
+		}    // turn device on
+		else if(message.contains("state='on'")) {
+			String m = String.format("D:'%s':ON", deviceId);
+			dos.writeBytes(cryptoHandler.aesEncrypt(m) + "\r\n");
+		}
+		logger.log(Level.INFO, "DEVICE COMMAND SENT TO HUB");
+		dos.flush();
 	}
 }
