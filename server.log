@@ -1,0 +1,20 @@
+Oct 26, 2021 12:35:42 AM homdork.code.comm.Server handler
+INFO: -->
+Oct 26, 2021 12:35:42 AM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-26
+Oct 26, 2021 12:35:44 AM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 26, 2021 12:35:44 AM homdork.code.comm.Server retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 26, 2021 12:35:46 AM homdork.code.comm.Server handler
+SEVERE: Connection reset
+Oct 26, 2021 12:36:42 AM homdork.code.comm.Server handler
+INFO: -->
+Oct 26, 2021 12:36:42 AM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-26
+Oct 26, 2021 12:36:43 AM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 26, 2021 12:36:43 AM homdork.code.comm.Server retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 26, 2021 12:36:45 AM homdork.code.comm.Server handler
+SEVERE: Connection reset

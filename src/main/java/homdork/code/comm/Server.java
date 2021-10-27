@@ -11,18 +11,25 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Server extends Thread {
 	Socket client;
 	DataOutputStream outputStream;
 	DataInputStream inputStream;
 	BufferedReader reader;
+	Logger logger;
 
 	public Server(Socket clientSocket) throws IOException {
 		this.client = clientSocket;
 		this.outputStream = new DataOutputStream(client.getOutputStream());
 		this.inputStream = new DataInputStream(client.getInputStream());
 		this.reader = new BufferedReader(new InputStreamReader(inputStream));
+		this.logger = Logger.getLogger("SERVER_LOG");
 	}
 
 	@Override
@@ -31,6 +38,7 @@ public class Server extends Thread {
 			handler();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -80,11 +88,16 @@ public class Server extends Thread {
 	 * @param outputStream  socket's outputStream for writes
 	 * @param sqlHandler    sqö operations handling class
 	 * @param cryptoHandler cryptography class
-	 * @throws Exception called when newly saved user object or updated user object is to be returned (ON INSERT;SELECT AND UPDATE)
+	 * @throws Exception -
+	 *                   <p>
+	 *                   <p>
+	 *                   Called when newly saved user object or updated user object is to be returned
+	 *                   (ON INSERT;SELECT AND UPDATE)
 	 */
 	void retrieveReturnUser(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler) throws Exception {
 		ResultSet resultSet = sqlHandler.selectUserWhereUUID(getUUIDFromMessage(message));
 		if(resultSet.next()) {
+			logger.log(Level.INFO, "RESULT SET RECEIVED");
 			String uuid = resultSet.getString("id");
 			String name = resultSet.getString("name");
 			String email = resultSet.getString("email");
@@ -97,6 +110,7 @@ public class Server extends Thread {
 			System.out.println("JSON: " + json);
 			outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 			outputStream.flush();
+			logger.log(Level.INFO, "USER OBJECT SENT TO API");
 		}
 
 	}
@@ -111,6 +125,21 @@ public class Server extends Thread {
 		BufferedReader bis = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		CryptoHandler cryptoHandler = new CryptoHandler();
 		SQLHandler sqlHandler = new SQLHandler();
+
+		FileHandler fileHandler;
+
+		try {
+			fileHandler = new FileHandler("server.log", true);
+			logger.addHandler(fileHandler);
+			SimpleFormatter formatter = new SimpleFormatter();
+			fileHandler.setFormatter(formatter);
+
+			logger.log(Level.INFO, "-->");
+			logger.info("HANDLER INITIATED " + LocalDate.now());
+		} catch (Exception e) {
+			System.err.println("[ERROR]: " + e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
+		}
 
 		do {
 			try {
@@ -132,24 +161,29 @@ public class Server extends Thread {
 
 					if(message.contains("INSERT") && message.contains("users")) {
 						System.out.println("[LOG] Entered insert handler.");
+						logger.log(Level.INFO, "INSERT USER HANDLER OPERATION");
 
 						//save new user[1]
 						sqlHandler.updateHandler(message);
+						logger.log(Level.INFO, "INSERT USER QUERY EXECUTED");
 
 						//select new saved user in [1] and write to output stream
 						retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler);
 
 					} else if(message.contains("UPDATE") && message.contains("users")) {
 						System.out.println("[LOG] Entered update handler.");
+						logger.log(Level.INFO, "UPDATE USER HANDLER OPERATION");
 
 						//update user[1]
 						sqlHandler.updateHandler(message);
+						logger.log(Level.INFO, "UPDATE USER QUERY EXECUTED");
 
 						//select newly updated user in [1] and write to output stream
 						retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler);
 
 					} else if(message.contains("SELECT") && message.contains("users")) {
 						System.out.println("[LOG] Entered select handler.");
+						logger.log(Level.INFO, "SELECT USER HANDLER OPERATION");
 
 						//select user
 						retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler);
@@ -157,28 +191,36 @@ public class Server extends Thread {
 						// DEVICE OPERATIONS
 					} else if(message.contains("SELECT") && message.contains("devices")) {
 						System.out.println("[LOG] Entered select handler.");
+						logger.log(Level.INFO, "SELECT DEVICE HANDLER OPERATION");
 
 						// select device
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
 
 					} else if(message.contains("UPDATE") && message.contains("devices")) {
 						System.out.println("[LOG] Entered update handler.");
+						logger.log(Level.INFO, "UPDATE DEVICE HANDLER");
+
 						//update user[1]
 						sqlHandler.updateHandler(message);
+						logger.log(Level.INFO, "UPDATE DEVICE QUERY EXECUTED");
 
 						// select newly updated device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						System.out.println("[LOG] Entered insert handler.");
+						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
+
 						//update user[1]
 						sqlHandler.updateHandler(message);
+						logger.log(Level.INFO, "INSERT DEVICE QUERY EXECUTED");
+
 						//select new saved device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
 					}
-
+/*
 					//Send return code & string of encrypted message to the client
 					outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(message) + "\r\n");
-					outputStream.flush();
+					outputStream.flush();*/
 				} else {
 					// client = Local Hub
 
@@ -191,6 +233,7 @@ public class Server extends Thread {
 			} catch (SocketException e) {
 				running = false;
 				System.out.println("[ERROR] Client disconnected.");
+				logger.log(Level.SEVERE, e.getMessage());
 			}
 		} while (running);
 
@@ -201,6 +244,7 @@ public class Server extends Thread {
 		try {
 			ResultSet resultSet = sqlHandler.selectDeviceWhereUUID(getDeviceId(message));
 			if(resultSet.next()) {
+				logger.log(Level.INFO, "RESULT SET RECEIVED");
 				String deviceId = resultSet.getString("id");
 				String type = resultSet.getString("type");
 				String state = resultSet.getString("state");
@@ -264,6 +308,7 @@ public class Server extends Thread {
 			}
 		} catch (Exception e) {
 			System.err.println("[ERROR]: " + e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -274,5 +319,6 @@ public class Server extends Thread {
 		System.out.println(json);
 		outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 		outputStream.flush();
+		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
 	}
 }
