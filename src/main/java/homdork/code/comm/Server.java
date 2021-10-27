@@ -71,6 +71,7 @@ public class Server extends Thread {
 		return null;
 	}
 
+	// String query = String.format("SELECT * from devices WHERE deviceId='%s' AND WHERE userId='%s';", "727272", "45343");
 	public String getUUIDFromMessage(String message) {
 		//Get the UUID from table users or devices
 		StringBuilder builder = new StringBuilder();
@@ -166,6 +167,7 @@ public class Server extends Thread {
 				if(checkClient(message)) {
 					sqlHandler.setUp();
 					message = message.substring(4); // remove "API-" or "HUB-"
+					logger.log(Level.INFO, "API OPERATION");
 
 					if(message.contains("INSERT") && message.contains("users")) {
 						System.out.println("[LOG] Entered insert handler.");
@@ -219,15 +221,33 @@ public class Server extends Thread {
 						sendDeviceCommandToHub(message, cryptoHandler);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
+						// 12 pin
+						// 0 - 3 _ FAN
+						// 4 - 7 _ LAMP
+						// 8 - 12 THERM
+
+						// gen device id
+						// select "type"  === "FAN"  - {type,userId}
+						//      - select * from devices where deviceTYpe = FAN AND userID=userId      @queryBuilder
+						//			 order devices by pins
+						//      - FANS : 0 -3
+						// 			 loop i = 0 - 3, if i != get(index).pin   --> return i else return -1
+
+						// let hub know there is a new device ??? not needed
 						System.out.println("[LOG] Entered insert handler.");
 						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
 
 						//update user[1]
-						sqlHandler.updateHandler(message);
+						message = message.replace("ppp", "pinNr");
+						message = message.replace("ddd", "deviceId");
+						sqlHandler.updateHandler(message); // modified message for pin
 						logger.log(Level.INFO, "INSERT DEVICE QUERY SENT");
 
 						//select new saved device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
+
+						// communication with local hub
+
 					}
 /*
 					//Send return code & string of encrypted message to the client
@@ -235,15 +255,20 @@ public class Server extends Thread {
 					outputStream.flush();*/
 				} else {
 					// client = Local Hub
+					message = message.substring(4); // remove "API-" or "HUB-"
+					logger.log(Level.INFO, "LOCAL HUB OPERATION");
+					logger.log(Level.INFO, "HUB COMMAND: " + message);
 
 					// physical change in device state -- requires DB update
-					// add new device -- synced with UI add, requires DB update(INSERT) (2nd half)
-					// client device operations like turn lamp off are handled up in the else if -- ^^
-
-					// [D:deviceID:ON or level:userID]
+					//       [D:deviceID:ON or level:userID]
 					if(message.contains("D:")) {
-						handleDeviceOperation(message.substring(2));
+						handleDeviceOperation(message.substring(2)); // remove "D:"
 					}
+
+					// add new device -- synced with UI add, requires DB update(INSERT) (2nd half)
+
+
+					// client device operations like turn lamp off are handled up in the else if -- ^^
 				}
 
 			} catch (SocketException e) {
@@ -256,30 +281,32 @@ public class Server extends Thread {
 	}
 
 	private void handleDeviceOperation(String substring) throws SQLException {
-		logger.log(Level.INFO,"LOCAL HUB OPERATION");
 		String[] parts = substring.split(":");
 		String deviceID = parts[0];
 		String userID = parts[2];
 
 		String op = parts[1];
 		double level = 9999;
-		if(!op.contains("ON") || !op.contains("OFF")){
-			level = Double.parseDouble(op);
+		// OFF,ON,level(double)
+		if(!op.contains("ON")) {
+			if(!op.contains("OFF"))
+				level = Double.parseDouble(op);
 		}
 
 		if(level == 9999) {
 			String q;
 			if(op.equals("ON")) {
-				logger.log(Level.INFO,"DEVICE TURN ON");
-				q = String.format("UPDATE devices SET state='on' WHERE deviceId='%s'", deviceID);
+				logger.log(Level.INFO, "DEVICE TURN ON");
+				q = String.format("UPDATE devices SET state='on' WHERE id='%s'", deviceID);
 			} else {
-				logger.log(Level.INFO,"DEVICE TURN OFF");
-				q = String.format("UPDATE devices SET state='off' WHERE deviceId='%s'", deviceID);
+				logger.log(Level.INFO, "DEVICE TURN OFF");
+				q = String.format("UPDATE devices SET state='off' WHERE id='%s'", deviceID);
 			}
 			sqlHandler.updateHandler(q);
 
 		} else {
-			String query = String.format("UPDATE devices SET state='on' AND level='%f' WHERE deviceId='%s' AND WHERE userId='%s';", level, deviceID, userID);
+			logger.log(Level.INFO, "DEVICE LEVEL ADJUSTMENT");
+			String query = String.format("UPDATE devices SET state='on' AND level='%f' WHERE id='%s' AND WHERE userId='%s';", level, deviceID, userID);
 			sqlHandler.updateHandler(query);
 		}
 
@@ -300,12 +327,14 @@ public class Server extends Thread {
 				level = resultSet.getDouble("level");
 				// new
 				hubAddress = resultSet.getString("hub_address");
+				int pin = resultSet.getInt("pin");
 
 				switch (type) {
 					case "FAN" -> {
 						Fan fan = new Fan(deviceId);
 						fan.setId(deviceId);
 						fan.setUserId(userID);
+						fan.setPin(pin);
 						if(state.equals("ON")) {
 							fan.setState(homdork.code.model.State.ON);
 						} else {
@@ -319,6 +348,7 @@ public class Server extends Thread {
 						lamp.setDeviceType(DeviceType.LAMP);
 						lamp.setId(deviceId);
 						lamp.setUserId(userID);
+						lamp.setPin(pin);
 						if(state.equals("ON")) {
 							lamp.setState(homdork.code.model.State.ON);
 						} else {
@@ -332,6 +362,7 @@ public class Server extends Thread {
 						curtain.setDeviceType(DeviceType.CURTAIN);
 						curtain.setId(deviceId);
 						curtain.setUserId(userID);
+						curtain.setPin(pin);
 						if(state.equals("ON")) {
 							curtain.setState(homdork.code.model.State.ON);
 						} else {
@@ -344,6 +375,7 @@ public class Server extends Thread {
 						Thermometer therm = new Thermometer(deviceId);
 						therm.setDeviceType(DeviceType.THERM);
 						therm.setId(deviceId);
+						therm.setPin(pin);
 						therm.setUserId(userID);
 						if(state.equals("ON")) {
 							therm.setState(homdork.code.model.State.ON);

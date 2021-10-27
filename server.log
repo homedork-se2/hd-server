@@ -18,3 +18,53 @@ Oct 26, 2021 12:36:43 AM homdork.code.comm.Server retrieveReturnDevice
 SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
 Oct 26, 2021 12:36:45 AM homdork.code.comm.Server handler
 SEVERE: Connection reset
+Oct 27, 2021 1:22:25 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 27, 2021 1:22:25 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-27
+Oct 27, 2021 1:22:25 PM homdork.code.comm.Server handler
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:22:25 PM homdork.code.comm.Server handleDeviceOperation
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:22:25 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 27, 2021 1:24:14 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 27, 2021 1:24:14 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-27
+Oct 27, 2021 1:24:15 PM homdork.code.comm.Server handler
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:24:15 PM homdork.code.comm.Server handleDeviceOperation
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:24:15 PM homdork.code.comm.Server run
+SEVERE: For input string: "OFF"
+Oct 27, 2021 1:26:02 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 27, 2021 1:26:02 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-27
+Oct 27, 2021 1:26:03 PM homdork.code.comm.Server handler
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:26:03 PM homdork.code.comm.Server run
+SEVERE: For input string: "OFF"
+Oct 27, 2021 1:35:51 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 27, 2021 1:35:51 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-27
+Oct 27, 2021 1:35:52 PM homdork.code.comm.Server handler
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:35:52 PM homdork.code.comm.Server handleDeviceOperation
+INFO: DEVICE TURN OFF
+Oct 27, 2021 1:35:52 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 27, 2021 1:38:48 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 27, 2021 1:38:48 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-27
+Oct 27, 2021 1:38:49 PM homdork.code.comm.Server handler
+INFO: LOCAL HUB OPERATION
+Oct 27, 2021 1:38:49 PM homdork.code.comm.Server handler
+INFO: HUB COMMAND: D:2311:33:45343
+Oct 27, 2021 1:38:49 PM homdork.code.comm.Server handleDeviceOperation
+INFO: DEVICE LEVEL ADJUSTMENT
+Oct 27, 2021 1:38:49 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
