@@ -88,7 +88,11 @@ public class Server extends Thread {
 	 * @param outputStream  socket's outputStream for writes
 	 * @param sqlHandler    sqö operations handling class
 	 * @param cryptoHandler cryptography class
-	 * @throws Exception called when newly saved user object or updated user object is to be returned (ON INSERT;SELECT AND UPDATE)
+	 * @throws Exception -
+	 *                   <p>
+	 *                   <p>
+	 *                   Called when newly saved user object or updated user object is to be returned
+	 *                   (ON INSERT;SELECT AND UPDATE)
 	 */
 	void retrieveReturnUser(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler) throws Exception {
 		ResultSet resultSet = sqlHandler.selectUserWhereUUID(getUUIDFromMessage(message));
@@ -194,21 +198,21 @@ public class Server extends Thread {
 
 					} else if(message.contains("UPDATE") && message.contains("devices")) {
 						System.out.println("[LOG] Entered update handler.");
-						logger.log(Level.INFO,"UPDATE DEVICE HANDLER");
+						logger.log(Level.INFO, "UPDATE DEVICE HANDLER");
 
 						//update user[1]
 						sqlHandler.updateHandler(message);
-						logger.log(Level.INFO,"UPDATE DEVICE QUERY EXECUTED");
+						logger.log(Level.INFO, "UPDATE DEVICE QUERY EXECUTED");
 
 						// select newly updated device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						System.out.println("[LOG] Entered insert handler.");
-						logger.log(Level.INFO,"INSERT DEVICE HANDLER");
+						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
 
 						//update user[1]
 						sqlHandler.updateHandler(message);
-						logger.log(Level.INFO,"INSERT DEVICE QUERY EXECUTED");
+						logger.log(Level.INFO, "INSERT DEVICE QUERY EXECUTED");
 
 						//select new saved device in [1] and write to output stream
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
