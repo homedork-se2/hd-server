@@ -59,8 +59,7 @@ public class Server extends Thread {
 					if(c != '\'') {
 						builder.append(c);
 					} else { // last "'" mark
-
-						System.out.println("DEVICE ID: " + builder.toString());
+						System.out.println("DEVICE ID: " + builder);
 						return builder.toString();
 					}
 				}
@@ -218,7 +217,7 @@ public class Server extends Thread {
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
 
 						// communication with local hub
-						sendDeviceCommandToHub(message, cryptoHandler);
+						sendDeviceCommandToHub(message);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						// 12 pin
@@ -249,10 +248,6 @@ public class Server extends Thread {
 						// communication with local hub
 
 					}
-/*
-					//Send return code & string of encrypted message to the client
-					outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(message) + "\r\n");
-					outputStream.flush();*/
 				} else {
 					// client = Local Hub
 					message = message.substring(4); // remove "API-" or "HUB-"
@@ -403,7 +398,7 @@ public class Server extends Thread {
 		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
 	}
 
-	void sendDeviceCommandToHub(String message, CryptoHandler cryptoHandler) throws Exception {
+	void sendDeviceCommandToHub(String message) throws Exception {
 		Client c = connectedClients.get(hubAddress);
 
 		Socket socket = c.getSocket();
