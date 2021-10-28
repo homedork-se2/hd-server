@@ -217,7 +217,7 @@ public class Server extends Thread {
 						retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler);
 
 						// communication with local hub
-						sendDeviceCommandToHub(message);
+						hubPlug(message);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						// 12 pin
@@ -398,7 +398,7 @@ public class Server extends Thread {
 		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
 	}
 
-	void sendDeviceCommandToHub(String message) throws Exception {
+	void hubPlug(String message) throws Exception {
 		Client c = connectedClients.get(hubAddress);
 
 		Socket socket = c.getSocket();
