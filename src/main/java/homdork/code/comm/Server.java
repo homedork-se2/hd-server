@@ -297,10 +297,10 @@ public class Server extends Thread {
 			String q;
 			if(op.equals("ON")) {
 				logger.log(Level.INFO, "DEVICE TURN ON");
-				q = String.format("UPDATE devices SET state='on' WHERE id='%s'", deviceID);
+				q = String.format("UPDATE devices SET state='on' WHERE id='%s';", deviceID);
 			} else {
 				logger.log(Level.INFO, "DEVICE TURN OFF");
-				q = String.format("UPDATE devices SET state='off' WHERE id='%s'", deviceID);
+				q = String.format("UPDATE devices SET state='off' WHERE id='%s';", deviceID);
 			}
 			sqlHandler.updateHandler(q);
 
@@ -412,18 +412,17 @@ public class Server extends Thread {
 		// turn device off
 		if(message.contains("state='off'")) {
 			String m = String.format("D:'%s':OFF", deviceId);
-			dos.writeBytes(cryptoHandler.aesEncrypt(m) + "\r\n");
-
+			dos.writeBytes(m + "\r\n");
 
 		} // sliding
 		else if(message.contains("level") && message.contains("state='on'")) {
 			String m = String.format("D:'%s':'%f'", deviceId, level);
-			dos.writeBytes(cryptoHandler.aesEncrypt(m) + "\r\n");
+			dos.writeBytes(m + "\r\n");
 
-		}    // turn device on
+		}  // turn device on
 		else if(message.contains("state='on'")) {
 			String m = String.format("D:'%s':ON", deviceId);
-			dos.writeBytes(cryptoHandler.aesEncrypt(m) + "\r\n");
+			dos.writeBytes(m + "\r\n");
 		}
 		logger.log(Level.INFO, "DEVICE COMMAND SENT TO HUB");
 		dos.flush();
