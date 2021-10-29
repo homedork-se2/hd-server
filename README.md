@@ -47,7 +47,6 @@
   > ![img_2.png](resources/server-arch.png)
   >
   > Overview of the current's server architecture without encryption/decryption layers added.
->
 * #### DEVELOPED BY:
     * [Lukas Olson](https://github.com/OlssonLukas) - Group leader
     * [Besnik](https://github.com/besnikskola)
