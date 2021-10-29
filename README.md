@@ -48,7 +48,7 @@
   >
   > Overview of the current's server architecture without encryption/decryption layers added.
 * #### DEVELOPED BY:
-    * [Lukas Olson](https://github.com/OlssonLukas) - Group leader
+    * [Lukas Olson](https://github.com/OlssonLukas) - Group Leader
     * [Besnik](https://github.com/besnikskola)
     * [Bujar](https://github.com/bujarr)
-    * [Wills Ekanem](https://github.com/Willz01) - Project manager
+    * [Wills Ekanem](https://github.com/Willz01)
