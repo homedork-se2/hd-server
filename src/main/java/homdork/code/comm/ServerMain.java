@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ServerMain {
 	// map<address,client> of API and all hubs connected to this server.
-	static Map<String, Client> clients = new HashMap<>();
+	static Map<String, ClientModel> clients = new HashMap<>();
 
 	public static void main(String[] args) throws IOException {
 		MultiClientServer multiClientServer = new MultiClientServer();
@@ -16,25 +16,12 @@ public class ServerMain {
 
 	static void addClient(Socket clientSocket) {
 		String ip = clientSocket.getInetAddress().toString();
-		Client client = new Client(ip, clientSocket);
-		clients.put(ip, client);
+		ClientModel clientModel = new ClientModel(ip, clientSocket);
+		clients.put(ip, clientModel);
 	}
 
-	public static Map<String, Client> getMap() {
+	public static Map<String, ClientModel> getMap() {
 		return clients;
 	}
 }
 
-class Client {
-	String ipAddress;
-	Socket socket = null;
-
-	public Client(String ipAddress, Socket socket) {
-		this.ipAddress = ipAddress;
-		this.socket = socket;
-	}
-
-	public Socket getSocket() {
-		return this.socket;
-	}
-}

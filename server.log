@@ -68,3 +68,5 @@ Oct 27, 2021 1:38:49 PM homdork.code.comm.Server handleDeviceOperation
 INFO: DEVICE LEVEL ADJUSTMENT
 Oct 27, 2021 1:38:49 PM homdork.code.comm.Server run
 SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 10:37:19 AM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED

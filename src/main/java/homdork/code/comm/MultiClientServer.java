@@ -25,6 +25,7 @@ public class MultiClientServer extends Thread {
 			logger.addHandler(fileHandler);
 			SimpleFormatter formatter = new SimpleFormatter();
 			fileHandler.setFormatter(formatter);
+			logger.log(Level.INFO,"SERVER SOCKET CREATED");
 		} catch (IOException e) {
 			System.out.println("[ERROR] There was an error when listening at port number: " + portNumber);
 			logger.log(Level.SEVERE, e.getMessage());

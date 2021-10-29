@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQLHandler {
 
@@ -59,5 +61,45 @@ public class SQLHandler {
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+
+	/**
+	 *
+	 * @param substring - message from local hub client, "HUB-" prefix removed.
+	 * @param logger - logger with added handler for server log.
+	 * @throws SQLException -
+	 */
+	public void handleDeviceOperation(String substring, Logger logger) throws SQLException {
+		String[] parts = substring.split(":");
+		String deviceID = parts[0];
+		String userID = parts[2];
+
+		String op = parts[1];
+		double level = 9999;
+
+		// OFF,ON,level(double)
+		if(!op.contains("ON")) {
+			if(!op.contains("OFF"))
+				level = Double.parseDouble(op);
+		}
+
+		if(level == 9999) {
+			String q;
+			if(op.equals("ON")) {
+				logger.log(Level.INFO, "DEVICE TURN ON");
+				q = String.format("UPDATE devices SET state='on' WHERE id='%s';", deviceID);
+			} else {
+				logger.log(Level.INFO, "DEVICE TURN OFF");
+				q = String.format("UPDATE devices SET state='off' WHERE id='%s';", deviceID);
+			}
+			updateHandler(q);
+
+		} else {
+			logger.log(Level.INFO, "DEVICE LEVEL ADJUSTMENT");
+			String query = String.format("UPDATE devices SET state='on' AND level='%f' WHERE id='%s' AND WHERE userId='%s';", level, deviceID, userID);
+			updateHandler(query);
+		}
+
+		logger.log(Level.INFO, "UPDATE DEVICE QUERY SENT");
 	}
 }
