@@ -39,23 +39,27 @@ public class ApiTransmitter {
 										  SQLHandler sqlHandler, CryptoHandler cryptoHandler, Logger logger) throws Exception {
 
 		ResultSet resultSet = sqlHandler.selectUserWhereUUID(getUUIDFromMessage(message));
+		try {
+			if(resultSet.next()) {
+				logger.log(Level.INFO, "RESULT SET RECEIVED");
+				String uuid = resultSet.getString("id");
+				String name = resultSet.getString("name");
+				String email = resultSet.getString("email");
 
-		if(resultSet.next()) {
-			logger.log(Level.INFO, "RESULT SET RECEIVED");
-			String uuid = resultSet.getString("id");
-			String name = resultSet.getString("name");
-			String email = resultSet.getString("email");
-
-			//make user model, use json to make an object based on that above ^
-			User user = new User(name, email, uuid);
-			Gson gson = new Gson();
-			String json = gson.toJson(user, User.class);
-			System.out.println("UUID: " + uuid);
-			System.out.println("JSON: " + json);
-			outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
-			outputStream.flush();
-			logger.log(Level.INFO, "USER OBJECT SENT TO API");
+				//make user model, use json to make an object based on that above ^
+				User user = new User(name, email, uuid);
+				Gson gson = new Gson();
+				String json = gson.toJson(user, User.class);
+				System.out.println("UUID: " + uuid);
+				System.out.println("JSON: " + json);
+				outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+				outputStream.flush();
+				logger.log(Level.INFO, "USER OBJECT FROM RESULT_SET SENT TO API");
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, e.getMessage());
 		}
+
 	}
 
 	static String getUUIDFromMessage(String message) {
@@ -159,7 +163,6 @@ public class ApiTransmitter {
 				return parts;
 			}
 		} catch (Exception e) {
-			System.err.println("[ERROR]: " + e.getMessage());
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return null;
@@ -174,8 +177,14 @@ public class ApiTransmitter {
 					if(c != '\'') {
 						builder.append(c);
 					} else { // last "'" mark
-						System.out.println("DEVICE ID: " + builder);
+						// query dependent check
+						if(message.contains("deviceId")) {
+							System.out.println("DEVICE ID: " + builder);
+						} else {
+							System.out.println("USER ID: " + builder);
+						}
 						return builder.toString();
+
 					}
 				}
 				isParenthesis = true;

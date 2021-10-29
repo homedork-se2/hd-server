@@ -21,13 +21,11 @@ public class MultiClientServer extends Thread {
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(portNumber);
-			System.out.println("[LOG] Server Socket has successfully been created.");
 			logger.addHandler(fileHandler);
 			SimpleFormatter formatter = new SimpleFormatter();
 			fileHandler.setFormatter(formatter);
 			logger.log(Level.INFO,"SERVER SOCKET CREATED");
 		} catch (IOException e) {
-			System.out.println("[ERROR] There was an error when listening at port number: " + portNumber);
 			logger.log(Level.SEVERE, e.getMessage());
 			System.exit(-1);
 		}
@@ -38,12 +36,10 @@ public class MultiClientServer extends Thread {
 				// API or any user hub
 				clientSocket = serverSocket.accept();
 				ServerMain.addClient(clientSocket);
-				logger.log(Level.INFO, "CLIENT SOCKET CONNECTED @ " + clientSocket.getInetAddress().toString());
-				System.out.println("[INFO] Connection has successfully been established with " + clientSocket.getInetAddress());
+				logger.log(Level.INFO, "CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: " + clientSocket.getInetAddress().toString());
 				Server server = new Server(clientSocket);
 				server.start();
 			} catch (IOException e) {
-				System.out.println("[ERROR] ERROR ACCEPTING SOCKET AT PORT: " + portNumber);
 				logger.log(Level.SEVERE, e.getMessage());
 				System.exit(-1);
 			}
