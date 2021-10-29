@@ -13,39 +13,48 @@ public class SQLHandler {
 	Connection connection;
 	Statement statement;
 	ResultSet resultSet;
+	Logger logger;
 
-	public void setUp() throws IOException {
+	public void setUp(Logger logger) throws IOException {
 		SQLConnector sqlConnector = new SQLConnector();
 		connection = sqlConnector.connect();
+		this.logger = logger;
 	}
 
 	/**
 	 * @param query select query on either `users` or `devices` table.
 	 * @return result set of selected
-	 * @throws SQLException -
 	 */
-	public ResultSet selectHandler(String query) throws SQLException {
-		statement = connection.createStatement();
-		resultSet = statement.executeQuery(query);
+	public ResultSet selectHandler(String query) {
+		try {
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery(query);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
 		return resultSet;
 	}
 
 	/**
 	 * @param query both user and device specific queries
-	 * @throws SQLException on fail query
 	 */
-	public void updateHandler(String query) throws SQLException {
-		statement = connection.createStatement();
-		statement.executeUpdate(query);
+	public void updateHandler(String query) {
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+
 	}
 
-	public ResultSet selectUserWhereUUID(String id) throws SQLException {
+	public ResultSet selectUserWhereUUID(String id) {
 		String query = "SELECT * FROM `users` WHERE uuid ='" + id + "';";
 		return selectHandler(query);
 	}
 
 	// change uuid to deviceId in DB
-	public ResultSet selectDeviceWhereUUID(String id) throws SQLException {
+	public ResultSet selectDeviceWhereUUID(String id) {
 		String query = "SELECT * FROM `devices` WHERE id ='" + id + "';";
 		return selectHandler(query);
 	}
@@ -64,12 +73,10 @@ public class SQLHandler {
 	}
 
 	/**
-	 *
 	 * @param substring - message from local hub client, "HUB-" prefix removed.
-	 * @param logger - logger with added handler for server log.
-	 * @throws SQLException -
+	 * @param logger    - logger with added handler for server log.
 	 */
-	public void handleDeviceOperation(String substring, Logger logger) throws SQLException {
+	public void handleDeviceOperation(String substring, Logger logger) {
 		String[] parts = substring.split(":");
 		String deviceID = parts[0];
 		String userID = parts[2];

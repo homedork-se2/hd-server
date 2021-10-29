@@ -27,11 +27,9 @@ public class SQLConnector {
 			String url = "jdbc:mysql://localhost:" + portNumber + "/" + database + "?user=" + username + "&password=" + password + "&serverTimezone=UTC";
 			connection = DriverManager.getConnection(url);
 
-			System.out.println("Connection successfully established..");
 			logger.log(Level.INFO, "DB CONNECTION SUCCESSFUL");
 
 		} catch (SQLException ex) {
-			System.err.println("connect[ERROR]: Could not connect to the database. Make sure the credentials are correct.");
 			logger.log(Level.SEVERE, ex.getMessage());
 		}
 		return connection;
@@ -41,18 +39,15 @@ public class SQLConnector {
 	public void disconnect() {
 		try {
 			if(connection != null) {
-				System.err.println("Connection has successfully closed..");
 				connection.close();
 			}
 			if(statement != null) {
-				System.err.println("Connection has successfully closed..");
 				statement.close();
 			}
 			if(resultSet != null) {
-				System.err.println("Connection has successfully closed..");
 				resultSet.close();
 			}
-			logger.log(Level.INFO, "DB TERMINATION SUCCESSFUL");
+			logger.log(Level.INFO, "DB CONNECTION CLOSED");
 		} catch (SQLException ex) {
 			System.err.println(ex.getMessage());
 			logger.log(Level.SEVERE, ex.getMessage());

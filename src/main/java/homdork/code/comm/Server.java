@@ -76,18 +76,17 @@ public class Server extends Thread {
 				cryptoHandler.setUpCipher();
 				//Decrypt encryptedMessage and print it
 				String message = cryptoHandler.aesDecrypt(byteArray);
-				System.out.println("[DECRYPTED/READ]: " + message);
+				logger.log(Level.INFO,"[DECRYPTED/READ]: " + message);
 
 				// API- client = API
 				// HUB- client = Local hub
 
 				if(checkClient(message)) {
-					sqlHandler.setUp();
+					sqlHandler.setUp(logger);
 					message = message.substring(4); // remove "API-" or "HUB-"
 					logger.log(Level.INFO, "API OPERATION");
 
 					if(message.contains("INSERT") && message.contains("users")) {
-						System.out.println("[LOG] Entered insert handler.");
 						logger.log(Level.INFO, "INSERT USER HANDLER OPERATION");
 
 						//save new user[1]
@@ -98,7 +97,6 @@ public class Server extends Thread {
 						ApiTransmitter.retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler, logger);
 
 					} else if(message.contains("UPDATE") && message.contains("users")) {
-						System.out.println("[LOG] Entered update handler.");
 						logger.log(Level.INFO, "UPDATE USER HANDLER OPERATION");
 
 						//update user[1]
@@ -109,7 +107,6 @@ public class Server extends Thread {
 						ApiTransmitter.retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler, logger);
 
 					} else if(message.contains("SELECT") && message.contains("users")) {
-						System.out.println("[LOG] Entered select handler.");
 						logger.log(Level.INFO, "SELECT USER HANDLER OPERATION");
 
 						//select user
@@ -117,14 +114,12 @@ public class Server extends Thread {
 
 						// DEVICE OPERATIONS
 					} else if(message.contains("SELECT") && message.contains("devices")) {
-						System.out.println("[LOG] Entered select handler.");
 						logger.log(Level.INFO, "SELECT DEVICE HANDLER OPERATION");
 
 						// select device
 						ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 
 					} else if(message.contains("UPDATE") && message.contains("devices")) {
-						System.out.println("[LOG] Entered update handler.");
 						logger.log(Level.INFO, "UPDATE DEVICE HANDLER");
 
 						//update user[1]
@@ -157,7 +152,6 @@ public class Server extends Thread {
 						// 			 loop i = 0 - 3, if i != get(index).pin   --> return i else return -1
 
 						// let hub know there is a new device ??? not needed
-						System.out.println("[LOG] Entered insert handler.");
 						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
 
 						//update user[1]
@@ -192,7 +186,6 @@ public class Server extends Thread {
 
 			} catch (SocketException e) {
 				running = false;
-				System.out.println("[ERROR] Client disconnected.");
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 		} while (running);
