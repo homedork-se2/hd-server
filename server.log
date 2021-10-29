@@ -480,3 +480,413 @@ Oct 29, 2021 11:47:32 PM homdork.code.data.SQLHandler selectHandler
 INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
 Oct 29, 2021 11:47:32 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
 SEVERE: Cannot invoke "java.sql.ResultSet.next()" because "resultSet" is null
+Oct 29, 2021 11:02:29 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:03:59 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTED @ /192.168.1.93
+Oct 29, 2021 11:03:59 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:03:59 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:04:00 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:04:00 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:04:00 PM homdork.code.comm.Server handler
+INFO: SELECT USER HANDLER OPERATION
+Oct 29, 2021 11:04:00 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:22:17 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:22:30 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:22:30 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:22:30 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:22:30 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from users WHERE uuid='3434';
+Oct 29, 2021 11:22:31 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:22:31 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:22:31 PM homdork.code.comm.Server handler
+INFO: SELECT USER HANDLER OPERATION
+Oct 29, 2021 11:22:31 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:22:49 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:22:49 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:22:49 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:22:49 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE uuid='3434';
+Oct 29, 2021 11:22:49 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:22:49 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:22:49 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:22:49 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:23:35 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /192.168.1.93
+Oct 29, 2021 11:23:35 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:23:35 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:23:35 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE uuid='3434';
+Oct 29, 2021 11:23:35 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:23:35 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:23:35 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:23:35 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:29:43 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /192.168.1.93
+Oct 29, 2021 11:29:43 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /192.168.1.93
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE userId='3434' AND deviceType='FAN';
+Oct 29, 2021 11:29:43 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:29:43 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:29:43 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:29:52 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:29:52 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:29:52 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:29:52 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:29:52 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:29:52 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:29:53 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE userId='3434' AND deviceType='FAN';
+Oct 29, 2021 11:29:53 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:29:53 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:29:53 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:29:53 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:30:44 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:30:44 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:30:44 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:30:44 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:30:44 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:30:44 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:30:44 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE deviceId='343' AND WHERE userId='3434';
+Oct 29, 2021 11:30:45 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:30:45 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:30:45 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:30:45 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:32:00 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:32:06 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:32:06 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:32:06 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:32:06 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:32:06 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:32:06 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:32:07 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE deviceId='343' AND WHERE userId='3434';
+Oct 29, 2021 11:32:07 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:32:07 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:32:07 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:32:07 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:34:05 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:34:09 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:34:09 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:34:09 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:34:09 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:34:09 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:34:09 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:34:09 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE deviceId='343' AND WHERE userId='3434';
+Oct 29, 2021 11:34:10 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:34:10 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:34:10 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:34:10 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:34:27 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:34:27 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE deviceId='343' AND WHERE userId='3434';
+Oct 29, 2021 11:34:27 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:34:27 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:34:28 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:34:37 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:34:37 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE deviceId='343' AND WHERE userId='3434';
+Oct 29, 2021 11:34:37 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:34:37 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:34:37 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:35:06 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:35:06 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE userId='3434' AND deviceType='FAN';
+Oct 29, 2021 11:35:06 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:35:06 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:35:06 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:35:26 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:35:26 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:35:26 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:35:26 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE uuid='3434';
+Oct 29, 2021 11:35:26 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:35:26 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:35:26 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:35:26 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:35:54 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:35:54 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:35:54 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:35:55 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-INSERT INTO `users` (`uuid`, `name`, `email`) VALUES ('1111', 'bash', 'bash@mail');
+Oct 29, 2021 11:35:55 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:35:55 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:35:55 PM homdork.code.comm.Server handler
+INFO: INSERT USER HANDLER OPERATION
+Oct 29, 2021 11:35:55 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:40:31 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:40:49 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:40:49 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:40:49 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:40:49 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-INSERT INTO `users` (`uuid`, `name`, `email`) VALUES ('1111', 'bash', 'bash@mail');
+Oct 29, 2021 11:40:49 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:40:49 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:40:49 PM homdork.code.comm.Server handler
+INFO: INSERT USER HANDLER OPERATION
+Oct 29, 2021 11:40:49 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:42:06 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:42:13 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:42:13 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:42:13 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:42:14 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-INSERT INTO `users` (`uuid`, `name`, `email`) VALUES ('1111', 'bash', 'bash@mail');
+Oct 29, 2021 11:42:14 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:42:14 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:42:14 PM homdork.code.comm.Server handler
+INFO: INSERT USER HANDLER OPERATION
+Oct 29, 2021 11:42:14 PM homdork.code.data.SQLHandler updateHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:42:14 PM homdork.code.comm.Server handler
+INFO: INSERT USER QUERY SENT
+Oct 29, 2021 11:42:14 PM homdork.code.data.SQLHandler selectHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:42:14 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.ResultSet.next()" because "resultSet" is null
+Oct 29, 2021 11:44:27 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:44:32 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:44:32 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:44:32 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:44:33 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-INSERT INTO `users` (`uuid`, `name`, `email`) VALUES ('1111', 'bash', 'bash@mail');
+Oct 29, 2021 11:44:33 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:44:33 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:44:33 PM homdork.code.comm.Server handler
+INFO: INSERT USER HANDLER OPERATION
+Oct 29, 2021 11:44:33 PM homdork.code.data.SQLHandler updateHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:44:33 PM homdork.code.comm.Server handler
+INFO: INSERT USER QUERY SENT
+Oct 29, 2021 11:44:33 PM homdork.code.data.SQLHandler selectHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:44:33 PM homdork.code.comm.Server run
+SEVERE: Cannot invoke "java.sql.ResultSet.next()" because "resultSet" is null
+Oct 29, 2021 11:45:58 PM homdork.code.comm.MultiClientServer run
+INFO: SERVER SOCKET CREATED
+Oct 29, 2021 11:46:09 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:46:09 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:46:09 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:46:09 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-INSERT INTO `users` (`uuid`, `name`, `email`) VALUES ('1111', 'bash', 'bash@mail');
+Oct 29, 2021 11:46:09 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:46:09 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:46:09 PM homdork.code.comm.Server handler
+INFO: INSERT USER HANDLER OPERATION
+Oct 29, 2021 11:46:09 PM homdork.code.data.SQLHandler updateHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:46:09 PM homdork.code.comm.Server handler
+INFO: INSERT USER QUERY SENT
+Oct 29, 2021 11:46:09 PM homdork.code.data.SQLHandler selectHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:46:09 PM homdork.code.comm.ApiTransmitter retrieveReturnUser
+WARNING: Cannot invoke "java.sql.ResultSet.next()" because "resultSet" is null
+Oct 29, 2021 11:46:35 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:46:35 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:46:35 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:46:35 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE uuid='222';
+Oct 29, 2021 11:46:35 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:46:35 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:46:35 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:46:35 PM homdork.code.data.SQLHandler selectHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:46:35 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.ResultSet.next()" because "resultSet" is null
+Oct 29, 2021 11:47:31 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:47:31 PM homdork.code.comm.MultiClientServer run
+INFO: CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: /169.254.121.255
+Oct 29, 2021 11:47:31 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:47:31 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:47:31 PM homdork.code.comm.Server handler
+INFO: -->
+Oct 29, 2021 11:47:31 PM homdork.code.comm.Server handler
+INFO: HANDLER INITIATED 2021-10-29
+Oct 29, 2021 11:47:32 PM homdork.code.comm.Server handler
+INFO: [DECRYPTED/READ]: API-SELECT * from devices WHERE userId='222' AND deviceType='FAN';
+Oct 29, 2021 11:47:32 PM homdork.code.data.SQLConnector connect
+SEVERE: Access denied for user 'root'@'localhost' (using password: YES)
+Oct 29, 2021 11:47:32 PM homdork.code.comm.Server handler
+INFO: API OPERATION
+Oct 29, 2021 11:47:32 PM homdork.code.comm.Server handler
+INFO: SELECT DEVICE HANDLER OPERATION
+Oct 29, 2021 11:47:32 PM homdork.code.data.SQLHandler selectHandler
+INFO: Cannot invoke "java.sql.Connection.createStatement()" because "this.connection" is null
+Oct 29, 2021 11:47:32 PM homdork.code.comm.ApiTransmitter retrieveReturnDevice
+SEVERE: Cannot invoke "java.sql.ResultSet.next()" because "resultSet" is null
