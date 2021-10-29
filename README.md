@@ -1,6 +1,6 @@
 ## HOMEDORK's DATABASE SERVER
 
-* Communicates with Homedork's API and user's local hub
+### Communicates with Homedork's API and user's local hub
 * ### Communication with API
   > The API acts as a client to this DB server, constructs corresponding DB queries based on received http requests.
 * ### Communication with Local hub
