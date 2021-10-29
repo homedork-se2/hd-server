@@ -1,13 +1,12 @@
 package homdork.code.model;
 
-import java.util.UUID;
-
 public abstract class Device {
 	public String id;
 	public State state;  // "on" and "off" for all device types.
 	public DeviceType deviceType;  // "LAMP","FAN" , "THERMOMETER", "CURTAIN" ...
 	public String userId;
 	public double level;  // brightness : Lamp[ceiling + floor] . Speed : Fan . Warmth : Thermometer
+	public int pin;
 
 	public DeviceType getDeviceType() {
 		return deviceType;
@@ -67,5 +66,13 @@ public abstract class Device {
 				", userId='" + userId + '\'' +
 				", level=" + level +
 				'}';
+	}
+
+	public int getPin() {
+		return pin;
+	}
+
+	public void setPin(int pin) {
+		this.pin = pin;
 	}
 }

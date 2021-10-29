@@ -1,7 +1,5 @@
 package homdork.code.model;
 
-import java.util.UUID;
-
 public class Thermometer extends Device {
 
 

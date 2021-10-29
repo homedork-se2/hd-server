@@ -1,7 +1,5 @@
 package homdork.code.model;
 
-import java.util.UUID;
-
 public class Fan extends Device {
 
 	public Fan(String id) {
