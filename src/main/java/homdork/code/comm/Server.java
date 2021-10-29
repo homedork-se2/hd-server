@@ -137,7 +137,7 @@ public class Server extends Thread {
 
 						assert parts != null;
 						String deviceId = parts[0];
-						double level = Integer.parseInt(parts[1].toString());
+						double level = Double.parseDouble(parts[1]);
 						String hubAddress = parts[2];
 
 						// communication with local hub
