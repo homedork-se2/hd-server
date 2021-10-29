@@ -37,7 +37,6 @@ public class MultiClientServer extends Thread {
 			try {
 				// API or any user hub
 				clientSocket = serverSocket.accept();
-
 				ServerMain.addClient(clientSocket);
 				logger.log(Level.INFO, "CLIENT SOCKET CONNECTED @ " + clientSocket.getInetAddress().toString());
 				System.out.println("[INFO] Connection has successfully been established with " + clientSocket.getInetAddress());
