@@ -84,7 +84,7 @@ public class ApiTransmitter {
 
 	public static String[] retrieveReturnDevice(String message, DataOutputStream outputStream, SQLHandler sqlHandler,
 												CryptoHandler cryptoHandler, Logger logger) {
-		String[] parts = new String[3];
+		String[] parts = new String[4];
 		try {
 			ResultSet resultSet = sqlHandler.selectDeviceWhereUUID(getDeviceId(message));
 			if(resultSet.next()) {
@@ -101,6 +101,7 @@ public class ApiTransmitter {
 				parts[0] = deviceId;
 				parts[1] = String.valueOf(((int) level));
 				parts[2] = hubAddress;
+				parts[3] = String.valueOf(pin);
 
 
 				switch (type) {

@@ -1,5 +1,6 @@
 package homdork.code.data;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -76,7 +77,7 @@ public class SQLHandler {
 	 * @param substring - message from local hub client, "HUB-" prefix removed.
 	 * @param logger    - logger with added handler for server log.
 	 */
-	public void handleDeviceOperation(String substring, Logger logger) {
+	public void handleDeviceOperation(String substring, Logger logger, DataOutputStream outputStream) {
 		String[] parts = substring.split(":");
 		String deviceID = parts[0];
 		String userID = parts[2];
@@ -107,6 +108,13 @@ public class SQLHandler {
 			updateHandler(query);
 		}
 
-		logger.log(Level.INFO, "UPDATE DEVICE QUERY SENT");
+		// write local hub response ... success/Fail
+		try {
+			outputStream.writeBytes("SUCCESS : DEVICE UPDATE SAVED" + "\r\n");
+		} catch (IOException e) {
+			logger.severe(e.getMessage());
+		} finally {
+			logger.log(Level.INFO, "UPDATE DEVICE QUERY SENT");
+		}
 	}
 }
