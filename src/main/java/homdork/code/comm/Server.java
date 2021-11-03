@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -24,12 +25,13 @@ public class Server extends Thread {
 
 	Map<String, ClientModel> connectedClients = ServerMain.getMap();
 
-	public Server(Socket clientSocket) throws IOException {
+	public Server(Socket clientSocket, SQLHandler handler) throws IOException {
 		this.client = clientSocket;
 		this.outputStream = new DataOutputStream(client.getOutputStream());
 		this.inputStream = new DataInputStream(client.getInputStream());
 		this.reader = new BufferedReader(new InputStreamReader(inputStream));
 		this.logger = Logger.getLogger("SERVER_LOG");
+		this.sqlHandler = handler;
 	}
 
 	@Override
@@ -51,7 +53,6 @@ public class Server extends Thread {
 		boolean running = true;
 		BufferedReader bis = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		CryptoHandler cryptoHandler = new CryptoHandler();
-		sqlHandler = new SQLHandler();
 
 		FileHandler fileHandler;
 
@@ -82,7 +83,7 @@ public class Server extends Thread {
 				// HUB- client = Local hub
 
 				if(checkClient(message)) {
-					sqlHandler.setUp(logger);
+				//	sqlHandler.setUp(logger);
 					message = message.substring(4); // remove "API-" or "HUB-"
 					logger.log(Level.INFO, "API OPERATION");
 
@@ -134,9 +135,10 @@ public class Server extends Thread {
 						String deviceId = parts[0];
 						double level = Double.parseDouble(parts[1]);
 						String hubAddress = parts[2];
+						String pinNumber = parts[3];
 
 						// communication with local hub
-						HubTransmitter.transmit(message, connectedClients, hubAddress, deviceId, level, logger);
+					//	HubTransmitter.transmit(message, connectedClients, hubAddress, pinNumber, level, logger);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						// 12 pin
@@ -180,9 +182,11 @@ public class Server extends Thread {
 
 					// physical change in device state -- requires DB update
 					//       [D:deviceID:ON or level:userID]
+					System.out.println(message);
 					if(message.contains("D:")) {
 						sqlHandler.handleDeviceOperation(message.substring(2), logger, outputStream); // remove "D:"
 					}
+					System.out.println(Arrays.toString(connectedClients.keySet().toArray()));
 				}
 			} catch (SocketException e) {
 				running = false;

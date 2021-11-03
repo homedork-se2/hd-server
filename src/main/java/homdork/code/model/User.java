@@ -3,13 +3,13 @@ package homdork.code.model;
 public class User {
     public String name;
     public String email;
-    public String uuid;
+    public String id;
     // public List<Device> userDevices;
 
-    public User(String name, String email, String uuid) {
+    public User(String name, String email, String id) {
         this.name = name;
         this.email = email;
-        this.uuid = uuid;
+        this.id = id;
         // this.userDevices = new ArrayList<>();
     }
 
@@ -29,7 +29,7 @@ public class User {
         this.email = email;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getId() {
+        return id;
     }
 }

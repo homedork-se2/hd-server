@@ -50,7 +50,7 @@ public class SQLHandler {
 	}
 
 	public ResultSet selectUserWhereUUID(String id) {
-		String query = "SELECT * FROM `users` WHERE uuid ='" + id + "';";
+		String query = "SELECT * FROM `users` WHERE id ='" + id + "';";
 		return selectHandler(query);
 	}
 
@@ -62,7 +62,7 @@ public class SQLHandler {
 
 	public void createUser() {
 		try {
-			String sql = "INSERT INTO `users` (`uuid`, `name`, `email`) VALUES ('28285656', 'addddlsgg', 'widddddddil.com');";
+			String sql = "INSERT INTO `users` (`id`, `name`, `email`) VALUES ('28285656', 'addddlsgg', 'widddddddil.com');";
 			statement = connection.createStatement();
 			statement.executeUpdate(sql);
 
