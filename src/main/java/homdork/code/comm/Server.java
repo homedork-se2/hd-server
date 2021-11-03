@@ -76,7 +76,7 @@ public class Server extends Thread {
 				cryptoHandler.setUpCipher();
 				//Decrypt encryptedMessage and print it
 				String message = cryptoHandler.aesDecrypt(byteArray);
-				logger.log(Level.INFO,"[DECRYPTED/READ]: " + message);
+				logger.log(Level.INFO, "[DECRYPTED/READ]: " + message);
 
 				// API- client = API
 				// HUB- client = Local hub
@@ -161,9 +161,15 @@ public class Server extends Thread {
 						logger.log(Level.INFO, "INSERT DEVICE QUERY SENT");
 
 						//select new saved device in [1] and write to output stream
-						ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
+						String[] parts = ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 
-						// communication with local hub
+						assert parts != null;
+						String deviceId = parts[0];
+						double level = Double.parseDouble(parts[1]);
+						String hubAddress = parts[2];
+						String pin = parts[3];
+
+						// communication with local hub?    [alerting hub on new device] -- might not be necessary since the hub uses predefined pin-device slots.
 
 					}
 				} else {
@@ -175,15 +181,9 @@ public class Server extends Thread {
 					// physical change in device state -- requires DB update
 					//       [D:deviceID:ON or level:userID]
 					if(message.contains("D:")) {
-						sqlHandler.handleDeviceOperation(message.substring(2), logger); // remove "D:"
+						sqlHandler.handleDeviceOperation(message.substring(2), logger, outputStream); // remove "D:"
 					}
-
-					// add new device -- synced with UI add, requires DB update(INSERT) (2nd half)
-
-
-					// client device operations like turn lamp off are handled up in the else if -- ^^
 				}
-
 			} catch (SocketException e) {
 				running = false;
 				logger.log(Level.SEVERE, e.getMessage());

@@ -1,7 +1,9 @@
 package homdork.code.comm;
 
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,6 +18,8 @@ public class HubTransmitter {
 
 		Socket socket = c.getSocket();
 		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(socket.getInputStream()));  // read local hub response to device state update
 
 		// turn device off
 		if(message.contains("state='off'")) {
@@ -33,7 +37,17 @@ public class HubTransmitter {
 			dos.writeBytes(m + "\r\n");
 		}
 		logger.log(Level.INFO, "DEVICE COMMAND SENT TO HUB");
+
+		// receive local hub response ... success/fail
+		String hubResponse = bufferedReader.readLine();
+		if(!hubResponse.contains("success")) {
+			logger.log(Level.WARNING, "EXPECTED A DIFF HUB RESPONSE");
+		} else
+			logger.log(Level.INFO, "HUB RESPONSE SUCCESS");
 		dos.flush();
+		bufferedReader.close();
 		dos.close();
+
+
 	}
 }
