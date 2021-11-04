@@ -8,6 +8,8 @@ import homdork.code.security.CryptoHandler;
 
 import java.io.DataOutputStream;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +20,17 @@ public class ApiTransmitter {
 				.setPrettyPrinting()
 				.create()
 				.toJson(objectClass, objectClass.getClass());
+		System.out.println(json);
+		outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+		outputStream.flush();
+		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+	}
+
+	static void transmit(List<Device> devices, DataOutputStream outputStream, CryptoHandler cryptoHandler, Logger logger) throws Exception {
+		String json = new GsonBuilder()
+				.setPrettyPrinting()
+				.create()
+				.toJson(devices, devices.getClass());
 		System.out.println(json);
 		outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 		outputStream.flush();
@@ -55,6 +68,9 @@ public class ApiTransmitter {
 				outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 				outputStream.flush();
 				logger.log(Level.INFO, "USER OBJECT FROM RESULT_SET SENT TO API");
+			} else {
+				outputStream.writeBytes("status code: 350-" + null + "\r\n");
+				logger.info("NULL DEVICE REQUESTED");
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage());
@@ -86,13 +102,16 @@ public class ApiTransmitter {
 												CryptoHandler cryptoHandler, Logger logger) {
 		String[] parts = new String[4];
 		try {
-			ResultSet resultSet = sqlHandler.selectDeviceWhereUUID(getDeviceId(message));
+			String devId = getDeviceId(message);
+			System.out.println(devId);
+			assert devId != null;
+			ResultSet resultSet = sqlHandler.selectDeviceById(devId.trim());
 			if(resultSet.next()) {
 				logger.log(Level.INFO, "RESULT SET RECEIVED");
 				String deviceId = resultSet.getString("id");
 				String type = resultSet.getString("type");
 				String state = resultSet.getString("state");
-				String userID = resultSet.getString("users_id");
+				String userID = resultSet.getString("user_id");
 				double level = resultSet.getDouble("level");
 				// new
 				String hubAddress = resultSet.getString("hub_address");
@@ -109,7 +128,9 @@ public class ApiTransmitter {
 						Fan fan = new Fan(deviceId);
 						fan.setId(deviceId);
 						fan.setUserId(userID);
+						fan.setDeviceType(DeviceType.FAN);
 						fan.setPin(pin);
+						fan.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
 							fan.setState(homdork.code.model.State.ON);
 						} else {
@@ -119,11 +140,13 @@ public class ApiTransmitter {
 						transmit(fan, outputStream, cryptoHandler, logger);
 					}
 					case "LAMP" -> {
+						System.out.println("lamp obj");
 						Lamp lamp = new Lamp(deviceId);
 						lamp.setDeviceType(DeviceType.LAMP);
 						lamp.setId(deviceId);
 						lamp.setUserId(userID);
 						lamp.setPin(pin);
+						lamp.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
 							lamp.setState(homdork.code.model.State.ON);
 						} else {
@@ -138,6 +161,7 @@ public class ApiTransmitter {
 						curtain.setId(deviceId);
 						curtain.setUserId(userID);
 						curtain.setPin(pin);
+						curtain.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
 							curtain.setState(homdork.code.model.State.ON);
 						} else {
@@ -146,12 +170,13 @@ public class ApiTransmitter {
 						curtain.setLevel(level);
 						transmit(curtain, outputStream, cryptoHandler, logger);
 					}
-					default -> {  //THERM
+					case "THERM" -> {
 						Thermometer therm = new Thermometer(deviceId);
 						therm.setDeviceType(DeviceType.THERM);
 						therm.setId(deviceId);
 						therm.setPin(pin);
 						therm.setUserId(userID);
+						therm.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
 							therm.setState(homdork.code.model.State.ON);
 						} else {
@@ -160,9 +185,17 @@ public class ApiTransmitter {
 						therm.setLevel(level);
 						transmit(therm, outputStream, cryptoHandler, logger);
 					}
+					default -> {  //THERM
+						outputStream.writeBytes("status code: 350-" + null + "\r\n");
+					}
 				}
 				return parts;
+			} else {
+				outputStream.writeBytes("status code: 350-" + null + "\r\n");
+				logger.info("NULL DEVICE REQUESTED");
 			}
+
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
@@ -172,25 +205,137 @@ public class ApiTransmitter {
 	private static String getDeviceId(String message) {
 		StringBuilder builder = new StringBuilder();
 		boolean isParenthesis = false;
-		for(char c : message.toCharArray()) {
-			if(c == '\'' || isParenthesis) {
-				if(isParenthesis) {
-					if(c != '\'') {
-						builder.append(c);
-					} else { // last "'" mark
-						// query dependent check
-						if(message.contains("deviceId")) {
-							System.out.println("DEVICE ID: " + builder);
-						} else {
-							System.out.println("USER ID: " + builder);
-						}
-						return builder.toString();
+		int deviceIdLength = 5;
+		String deviceId;
 
+		if(message.contains("state") && !message.contains("level")) {
+			message = message.substring(39);
+			message = message.replace("'", "");
+			deviceId = message.replace(";", "");
+			System.out.println("DEVICE ID: " + message);
+			return deviceId;
+		} else if(message.contains("state") && message.contains("level")) {
+			message = message.substring(39);
+			message = message.replace("'", "");
+			message = message.replace(";", "");
+			deviceId = message.substring(message.length() - deviceIdLength);
+			System.out.println("DEVICE ID: " + deviceId);
+			return deviceId;
+		} else {
+			for(char c : message.toCharArray()) {
+				if(c == '\'' || isParenthesis) {
+					if(isParenthesis) {
+						if(c != '\'') {
+							builder.append(c);
+						} else { // last "'" mark
+							return builder.toString();
+						}
 					}
+					isParenthesis = true;
 				}
-				isParenthesis = true;
 			}
+
 		}
 		return null;
 	}
+
+	public static void getUserDevices(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler, Logger logger) {
+
+		try {
+			String userId = getDeviceId(message);
+			System.out.println(userId);
+			assert userId != null;
+			ResultSet resultSet = sqlHandler.selectDeviceByUserId(message);
+			List<Device> devices = new ArrayList<>();
+
+			while (resultSet.next()) {
+				logger.log(Level.INFO, "RESULT SET RECEIVED");
+				String deviceId = resultSet.getString("id");
+				String type = resultSet.getString("type");
+				String state = resultSet.getString("state");
+				String userID = resultSet.getString("user_id");
+				double level = resultSet.getDouble("level");
+				// new
+				String hubAddress = resultSet.getString("hub_address");
+				int pin = resultSet.getInt("pin");
+
+
+				switch (type) {
+					case "FAN" -> {
+						Fan fan = new Fan(deviceId);
+						fan.setId(deviceId);
+						fan.setDeviceType(DeviceType.FAN);
+						fan.setUserId(userID);
+						fan.setPin(pin);
+						fan.setHubAddress(hubAddress);
+						if(state.equals("ON")) {
+							fan.setState(homdork.code.model.State.ON);
+						} else {
+							fan.setState(homdork.code.model.State.OFF);
+						}
+						fan.setLevel(level);
+						devices.add(fan);
+					}
+					case "LAMP" -> {
+						System.out.println("lamp obj");
+						Lamp lamp = new Lamp(deviceId);
+						lamp.setDeviceType(DeviceType.LAMP);
+						lamp.setId(deviceId);
+						lamp.setUserId(userID);
+						lamp.setPin(pin);
+						lamp.setHubAddress(hubAddress);
+						if(state.equals("ON")) {
+							lamp.setState(homdork.code.model.State.ON);
+						} else {
+							lamp.setState(homdork.code.model.State.OFF);
+						}
+						lamp.setLevel(level);
+						devices.add(lamp);
+					}
+					case "CURTAIN" -> {
+						Curtain curtain = new Curtain(deviceId);
+						curtain.setDeviceType(DeviceType.CURTAIN);
+						curtain.setId(deviceId);
+						curtain.setUserId(userID);
+						curtain.setPin(pin);
+						curtain.setHubAddress(hubAddress);
+						if(state.equals("ON")) {
+							curtain.setState(homdork.code.model.State.ON);
+						} else {
+							curtain.setState(homdork.code.model.State.OFF);
+						}
+						curtain.setLevel(level);
+						devices.add(curtain);
+					}
+					case "THERM" -> {
+						Thermometer therm = new Thermometer(deviceId);
+						therm.setDeviceType(DeviceType.THERM);
+						therm.setId(deviceId);
+						therm.setPin(pin);
+						therm.setUserId(userID);
+						therm.setHubAddress(hubAddress);
+						if(state.equals("ON")) {
+							therm.setState(homdork.code.model.State.ON);
+						} else {
+							therm.setState(homdork.code.model.State.OFF);
+						}
+						therm.setLevel(level);
+						devices.add(therm);
+					}
+					default -> {  //THERM
+						outputStream.writeBytes("status code: 350-" + null + "\r\n");
+					}
+				}
+
+			}
+
+			transmit(devices, outputStream, cryptoHandler, logger);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+
+
+	}
+
+
 }

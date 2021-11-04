@@ -1,5 +1,8 @@
 package homdork.code.comm;
 
+import homdork.code.data.SQLConnector;
+import homdork.code.data.SQLHandler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,10 +13,13 @@ import java.util.logging.SimpleFormatter;
 
 public class MultiClientServer extends Thread {
 	final int portNumber = 1234;
-	Logger logger = Logger.getLogger("SERVER_LOG");
-	FileHandler fileHandler = new FileHandler("server.log", true);
+	Logger logger;
+	SQLHandler handler = new SQLHandler();
 
-	public MultiClientServer() throws IOException {
+
+	public MultiClientServer(SQLHandler handler, Logger logger) throws IOException {
+		this.handler = handler;
+		this.logger = logger;
 	}
 
 	@Override
@@ -21,9 +27,6 @@ public class MultiClientServer extends Thread {
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(portNumber);
-			logger.addHandler(fileHandler);
-			SimpleFormatter formatter = new SimpleFormatter();
-			fileHandler.setFormatter(formatter);
 			logger.log(Level.INFO,"SERVER SOCKET CREATED");
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage());
@@ -37,7 +40,7 @@ public class MultiClientServer extends Thread {
 				clientSocket = serverSocket.accept();
 				ServerMain.addClient(clientSocket);
 				logger.log(Level.INFO, "CLIENT SOCKET CONNECTION ESTABLISHED WITH ADDRESS: " + clientSocket.getInetAddress().toString());
-				Server server = new Server(clientSocket);
+				Server server = new Server(clientSocket, handler);
 				server.start();
 			} catch (IOException e) {
 				logger.log(Level.SEVERE, e.getMessage());

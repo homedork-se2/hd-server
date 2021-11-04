@@ -7,6 +7,7 @@ public abstract class Device {
 	public String userId;
 	public double level;  // brightness : Lamp[ceiling + floor] . Speed : Fan . Warmth : Thermometer
 	public int pin;
+	public String hubAddress;
 
 	public DeviceType getDeviceType() {
 		return deviceType;
@@ -74,5 +75,13 @@ public abstract class Device {
 
 	public void setPin(int pin) {
 		this.pin = pin;
+	}
+
+	public String getHubAddress() {
+		return hubAddress;
+	}
+
+	public void setHubAddress(String hubAddress) {
+		this.hubAddress = hubAddress;
 	}
 }
