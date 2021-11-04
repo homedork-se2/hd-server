@@ -55,8 +55,12 @@ public class SQLHandler {
 	}
 
 	// change uuid to deviceId in DB
-	public ResultSet selectDeviceWhereUUID(String id) {
+	public ResultSet selectDeviceById(String id) {
 		String query = "SELECT * FROM `devices` WHERE id ='" + id + "';";
+		return selectHandler(query);
+	}
+
+	public ResultSet selectDeviceByUserId(String query) {
 		return selectHandler(query);
 	}
 

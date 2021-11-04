@@ -83,7 +83,7 @@ public class Server extends Thread {
 				// HUB- client = Local hub
 
 				if(checkClient(message)) {
-				//	sqlHandler.setUp(logger);
+					//	sqlHandler.setUp(logger);
 					message = message.substring(4); // remove "API-" or "HUB-"
 					logger.log(Level.INFO, "API OPERATION");
 
@@ -107,7 +107,7 @@ public class Server extends Thread {
 						//select newly updated user in [1] and write to output stream
 						ApiTransmitter.retrieveReturnUser(message, outputStream, sqlHandler, cryptoHandler, logger);
 
-					} else if(message.contains("SELECT") && message.contains("users")) {
+					} else if(message.contains("SELECT") && message.contains("users") && !message.contains("users_id")) {
 						logger.log(Level.INFO, "SELECT USER HANDLER OPERATION");
 
 						//select user
@@ -117,8 +117,15 @@ public class Server extends Thread {
 					} else if(message.contains("SELECT") && message.contains("devices")) {
 						logger.log(Level.INFO, "SELECT DEVICE HANDLER OPERATION");
 
-						// select device
-						ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
+						// select a device 1 - "SELECT * from devices WHERE id='%s';"
+						// select all devices - "SELECT * from devices WHERE user_id='%s';"
+						// select based on type - SELECT * from devices WHERE user_id='%s' AND deviceType='LAMP';"
+
+						// get all devices "user_id"
+						if(!message.contains("user_id"))
+							ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
+						else
+							ApiTransmitter.getUserDevices(message, outputStream, sqlHandler, cryptoHandler, logger);
 
 					} else if(message.contains("UPDATE") && message.contains("devices")) {
 						logger.log(Level.INFO, "UPDATE DEVICE HANDLER");
@@ -138,7 +145,7 @@ public class Server extends Thread {
 						String pinNumber = parts[3];
 
 						// communication with local hub
-					//	HubTransmitter.transmit(message, connectedClients, hubAddress, pinNumber, level, logger);
+						//	HubTransmitter.transmit(message, connectedClients, hubAddress, pinNumber, level, logger);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						// 12 pin

@@ -24,10 +24,10 @@ public class SQLConnector {
     public Connection connect() {
         if (connection == null) {
             try {
-                String database = "homedork", portNumber = "3306", username = "root", password = "root";
-                String url = "jdbc:mysql://31.208.15.98:" + portNumber + "/" + database + "?user=" + username + "&password=" + password + "&serverTimezone=UTC";
-                String lite = "jdbc:sqlite:/Users/willz/homedork3.db";
-                connection = DriverManager.getConnection(lite);
+                String database = "mydb", portNumber = "3306", username = "root", password = "Elev6477";
+                String url = "jdbc:mysql://localhost:" + portNumber + "/" + database + "?user=" + username + "&password=" + password + "&serverTimezone=UTC";
+                // String lite = "jdbc:sqlite:\\W:\\sqlite3\\sqlite-tools-win32-x86-3360000\\homedork3.db";
+                connection = DriverManager.getConnection(url);
 
                 logger.log(Level.INFO, "DB CONNECTION SUCCESSFUL");
 
