@@ -72,7 +72,12 @@ public class Server extends Thread {
 		do {
 			try {
 				String encryptedMessage = bis.readLine();
-				byte[] byteArray = encryptedMessage.getBytes(StandardCharsets.UTF_8);
+                byte[] byteArray = new byte[0];
+                try {
+                    byteArray = encryptedMessage.getBytes(StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    logger.severe(e.getMessage());
+                }
 
 				cryptoHandler.setUpCipher();
 				//Decrypt encryptedMessage and print it
@@ -117,11 +122,6 @@ public class Server extends Thread {
 					} else if(message.contains("SELECT") && message.contains("devices")) {
 						logger.log(Level.INFO, "SELECT DEVICE HANDLER OPERATION");
 
-						// select a device 1 - "SELECT * from devices WHERE id='%s';"
-						// select all devices - "SELECT * from devices WHERE user_id='%s';"
-						// select based on type - SELECT * from devices WHERE user_id='%s' AND deviceType='LAMP';"
-
-						// get all devices "user_id"
 						if(!message.contains("user_id"))
 							ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 						else
@@ -139,13 +139,14 @@ public class Server extends Thread {
 						String[] parts = ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 
 						assert parts != null;
-						String deviceId = parts[0];
 						double level = Double.parseDouble(parts[1]);
 						String hubAddress = parts[2];
 						String pinNumber = parts[3];
 
-						// communication with local hub
-						//	HubTransmitter.transmit(message, connectedClients, hubAddress, pinNumber, level, logger);
+						outputStream.flush();
+                        // communication with local hub
+						HubClient hubClient = new HubClient();
+						hubClient.transmit(message,pinNumber,hubAddress,level,logger);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						// 12 pin
@@ -170,16 +171,7 @@ public class Server extends Thread {
 						logger.log(Level.INFO, "INSERT DEVICE QUERY SENT");
 
 						//select new saved device in [1] and write to output stream
-						String[] parts = ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
-
-						assert parts != null;
-						String deviceId = parts[0];
-						double level = Double.parseDouble(parts[1]);
-						String hubAddress = parts[2];
-						String pin = parts[3];
-
-						// communication with local hub?    [alerting hub on new device] -- might not be necessary since the hub uses predefined pin-device slots.
-
+						ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 					}
 				} else {
 					// client = Local Hub
@@ -187,9 +179,6 @@ public class Server extends Thread {
 					logger.log(Level.INFO, "LOCAL HUB OPERATION");
 					logger.log(Level.INFO, "HUB COMMAND: " + message);
 
-					// physical change in device state -- requires DB update
-					//       [D:deviceID:ON or level:userID]
-					System.out.println(message);
 					if(message.contains("D:")) {
 						sqlHandler.handleDeviceOperation(message.substring(2), logger, outputStream); // remove "D:"
 					}
@@ -200,6 +189,5 @@ public class Server extends Thread {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 		} while (running);
-
 	}
 }

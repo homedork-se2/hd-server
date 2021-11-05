@@ -14,7 +14,7 @@ import java.util.logging.SimpleFormatter;
 public class MultiClientServer extends Thread {
 	final int portNumber = 1234;
 	Logger logger;
-	SQLHandler handler = new SQLHandler();
+	SQLHandler handler;
 
 
 	public MultiClientServer(SQLHandler handler, Logger logger) throws IOException {

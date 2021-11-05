@@ -4,7 +4,7 @@ import java.net.Socket;
 
 public class ClientModel {
 	String ipAddress;
-	Socket socket = null;
+	Socket socket;
 
 	public ClientModel(String ipAddress, Socket socket) {
 		this.ipAddress = ipAddress;

@@ -185,7 +185,7 @@ public class ApiTransmitter {
 						therm.setLevel(level);
 						transmit(therm, outputStream, cryptoHandler, logger);
 					}
-					default -> {  //THERM
+					default -> {
 						outputStream.writeBytes("status code: 350-" + null + "\r\n");
 					}
 				}
@@ -205,7 +205,7 @@ public class ApiTransmitter {
 	private static String getDeviceId(String message) {
 		StringBuilder builder = new StringBuilder();
 		boolean isParenthesis = false;
-		int deviceIdLength = 5;
+		int deviceIdLength = 4;
 		String deviceId;
 
 		if(message.contains("state") && !message.contains("level")) {
@@ -322,11 +322,10 @@ public class ApiTransmitter {
 						therm.setLevel(level);
 						devices.add(therm);
 					}
-					default -> {  //THERM
+					default -> { 
 						outputStream.writeBytes("status code: 350-" + null + "\r\n");
 					}
 				}
-
 			}
 
 			transmit(devices, outputStream, cryptoHandler, logger);

@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,19 +61,6 @@ public class SQLHandler {
 
 	public ResultSet selectDeviceByUserId(String query) {
 		return selectHandler(query);
-	}
-
-	public void createUser() {
-		try {
-			String sql = "INSERT INTO `users` (`id`, `name`, `email`) VALUES ('28285656', 'addddlsgg', 'widddddddil.com');";
-			statement = connection.createStatement();
-			statement.executeUpdate(sql);
-
-			System.out.println("User created");
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-		}
 	}
 
 	/**
