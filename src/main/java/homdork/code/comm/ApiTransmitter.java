@@ -15,32 +15,53 @@ import java.util.logging.Logger;
 
 public class ApiTransmitter {
 
-	static void transmit(Object objectClass, DataOutputStream outputStream, CryptoHandler cryptoHandler, Logger logger) throws Exception {
-		String json = new GsonBuilder()
-				.setPrettyPrinting()
-				.create()
-				.toJson(objectClass, objectClass.getClass());
-		System.out.println(json);
-		outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
-		outputStream.flush();
-		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+	/**
+	 * @param objectClass   - Device object to be sent back to API as JSON response on "GET DEVICE" request.
+	 * @param outputStream  - Stream on with response is written.
+	 * @param cryptoHandler - For encryption of response to API.
+	 * @param logger        - server LOGGER object.
+	 */
+	static void transmit(Object objectClass, DataOutputStream outputStream, CryptoHandler cryptoHandler, Logger logger) {
+		try {
+			String json = new GsonBuilder()
+					.setPrettyPrinting()
+					.create()
+					.toJson(objectClass, objectClass.getClass());
+			System.out.println(json);
+			outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+			outputStream.flush();
+			logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+		} catch (Exception e) {
+			logger.severe(e.getMessage());
+		}
+
 	}
 
-	static void transmit(List<Device> devices, DataOutputStream outputStream, CryptoHandler cryptoHandler, Logger logger) throws Exception {
-		String json = new GsonBuilder()
-				.setPrettyPrinting()
-				.create()
-				.toJson(devices, devices.getClass());
-		System.out.println(json);
-		outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
-		outputStream.flush();
-		logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+	/**
+	 * @param devices       - List of devices to be sent back to API as JSON response on "GET * DEVICES" request.
+	 * @param outputStream  - Stream on with response is written.
+	 * @param cryptoHandler - For encryption of response to API.
+	 * @param logger        - server LOGGER object.
+	 */
+	static void transmit(List<Device> devices, DataOutputStream outputStream, CryptoHandler cryptoHandler, Logger logger) {
+		try {
+			String json = new GsonBuilder()
+					.setPrettyPrinting()
+					.create()
+					.toJson(devices, devices.getClass());
+			System.out.println(json);
+			outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
+			outputStream.flush();
+			logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+		} catch (Exception e) {
+			logger.severe(e.getMessage());
+		}
 	}
 
 	/**
 	 * @param message       decrypted message from API
 	 * @param outputStream  socket's outputStream for writes
-	 * @param sqlHandler    sqö operations handling class
+	 * @param sqlHandler    SQL operations handling class
 	 * @param cryptoHandler cryptography class
 	 * @throws Exception -
 	 *                   <p>
@@ -98,6 +119,19 @@ public class ApiTransmitter {
 		return userID;
 	}
 
+	/**
+	 * @param message       - Decrypted message from API
+	 * @param outputStream  - Socket's outputStream for writes
+	 * @param sqlHandler    - SQL operations handling class
+	 * @param cryptoHandler - Cryptography class
+	 *                      <p>
+	 *                      <p>
+	 *                      Called when newly saved device(abstract) object or updated device object is to be returned
+	 *                      (ON INSERT;SELECT AND UPDATE)
+	 *                      <p>
+	 *                      Based on the value of {@code #{type} } a device type object is created and transmitted to the API
+	 *                      using the {@link #transmit(List, DataOutputStream, CryptoHandler, Logger)} function.
+	 */
 	public static String[] retrieveReturnDevice(String message, DataOutputStream outputStream, SQLHandler sqlHandler,
 												CryptoHandler cryptoHandler, Logger logger) {
 		String[] parts = new String[4];
@@ -205,7 +239,7 @@ public class ApiTransmitter {
 	private static String getDeviceId(String message) {
 		StringBuilder builder = new StringBuilder();
 		boolean isParenthesis = false;
-		int deviceIdLength = 4;
+		int deviceIdLength = 5;
 		String deviceId;
 
 		if(message.contains("state") && !message.contains("level")) {
@@ -322,7 +356,7 @@ public class ApiTransmitter {
 						therm.setLevel(level);
 						devices.add(therm);
 					}
-					default -> { 
+					default -> {
 						outputStream.writeBytes("status code: 350-" + null + "\r\n");
 					}
 				}
