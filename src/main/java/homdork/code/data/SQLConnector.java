@@ -26,7 +26,7 @@ public class SQLConnector {
                 String database = "mydb", portNumber = "3306", username = "root", password = "Elev6477";
                 String mySql = "jdbc:mysql://localhost:" + portNumber + "/" + database + "?user=" + username + "&password=" + password + "&serverTimezone=UTC";
                 String lite = "jdbc:sqlite://Users/willz/homedork4.db";
-                connection = DriverManager.getConnection(mySql);
+                connection = DriverManager.getConnection(lite);
                 logger.log(Level.INFO, "DB CONNECTION SUCCESSFUL");
             } catch (SQLException ex) {
                 logger.log(Level.SEVERE, ex.getMessage());

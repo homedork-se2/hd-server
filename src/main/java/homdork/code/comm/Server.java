@@ -137,16 +137,17 @@ public class Server extends Thread {
 						// select newly updated device in [1] and write to output stream
 						// returns deviceId, hubAddress and level of updated device
 						String[] parts = ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
-
+						outputStream.flush();
 						assert parts != null;
 						double level = Double.parseDouble(parts[1]);
 						String hubAddress = parts[2];
 						String pinNumber = parts[3];
+						String deviceType = parts[4];
 
-						outputStream.flush();
+
                         // communication with local hub
 						HubClient hubClient = new HubClient();
-						hubClient.transmit(message,pinNumber,hubAddress,level,logger);
+						hubClient.transmit(message,pinNumber,hubAddress,level,deviceType, logger);
 
 					} else if(message.contains("INSERT") && message.contains("devices")) {
 						// 12 pin

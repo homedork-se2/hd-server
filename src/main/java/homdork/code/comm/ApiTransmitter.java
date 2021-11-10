@@ -134,7 +134,7 @@ public class ApiTransmitter {
 	 */
 	public static String[] retrieveReturnDevice(String message, DataOutputStream outputStream, SQLHandler sqlHandler,
 												CryptoHandler cryptoHandler, Logger logger) {
-		String[] parts = new String[4];
+		String[] parts = new String[5];
 		try {
 			String devId = getDeviceId(message);
 			System.out.println(devId);
@@ -155,6 +155,7 @@ public class ApiTransmitter {
 				parts[1] = String.valueOf(((int) level));
 				parts[2] = hubAddress;
 				parts[3] = String.valueOf(pin);
+				parts[4] = type;
 
 
 				switch (type) {
