@@ -25,7 +25,7 @@ public class ServerMain {
         }
     }
 
-    public ServerMain() throws IOException {
+    public ServerMain() {
     }
 
     public static void main(String[] args) throws IOException {
