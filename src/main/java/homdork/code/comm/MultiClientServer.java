@@ -1,15 +1,12 @@
 package homdork.code.comm;
 
-import homdork.code.data.SQLConnector;
 import homdork.code.data.SQLHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class MultiClientServer extends Thread {
 	final int portNumber = 1234;
@@ -27,7 +24,7 @@ public class MultiClientServer extends Thread {
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(portNumber);
-			logger.log(Level.INFO,"SERVER SOCKET CREATED");
+			logger.log(Level.INFO, "SERVER SOCKET CREATED");
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage());
 			System.exit(-1);

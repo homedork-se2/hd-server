@@ -53,12 +53,15 @@ public class SQLHandler {
 		return selectHandler(query);
 	}
 
-	// change uuid to deviceId in DB
 	public ResultSet selectDeviceById(String id) {
 		String query = "SELECT * FROM `devices` WHERE id ='" + id + "';";
 		return selectHandler(query);
 	}
 
+	/**
+	 * @param query - actual sql query
+	 * @return - result set of devices
+	 */
 	public ResultSet selectDeviceByUserId(String query) {
 		return selectHandler(query);
 	}
