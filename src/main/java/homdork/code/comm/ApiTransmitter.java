@@ -52,7 +52,7 @@ public class ApiTransmitter {
 			System.out.println(json);
 			outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 			outputStream.flush();
-			logger.log(Level.INFO, "DEVICE OBJECT SENT TO API");
+			logger.log(Level.INFO, "DEVICE LIST SENT TO API");
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
 		}
@@ -91,7 +91,7 @@ public class ApiTransmitter {
 				logger.log(Level.INFO, "USER OBJECT FROM RESULT_SET SENT TO API");
 			} else {
 				outputStream.writeBytes("status code: 350-" + null + "\r\n");
-				logger.info("NULL DEVICE REQUESTED");
+				logger.info("NULL USER REQUESTED");
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage());
@@ -220,9 +220,7 @@ public class ApiTransmitter {
 						therm.setLevel(level);
 						transmit(therm, outputStream, cryptoHandler, logger);
 					}
-					default -> {
-						outputStream.writeBytes("status code: 350-" + null + "\r\n");
-					}
+					default -> outputStream.writeBytes("status code: 350-" + null + "\r\n");
 				}
 				return parts;
 			} else {
@@ -274,13 +272,24 @@ public class ApiTransmitter {
 		return null;
 	}
 
-	public static void getUserDevices(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler, Logger logger) {
+	public static List<Device> getUserDevices(String message, DataOutputStream outputStream, SQLHandler sqlHandler, CryptoHandler cryptoHandler, Logger logger, boolean checker) {
 
 		try {
-			String userId = getDeviceId(message);
-			System.out.println(userId);
-			assert userId != null;
-			ResultSet resultSet = sqlHandler.selectDeviceByUserId(message);
+
+			ResultSet resultSet;
+			if(checker) {
+				String userId = getDeviceId(message);
+				System.out.println(userId);
+				assert userId != null;
+				resultSet = sqlHandler.selectDeviceByUserId(message);
+			} else {
+				// construct select sql query based on user ID
+				String[] parts = message.split(" ");
+				String userId = parts[1];
+				String query = String.format("SELECT * from devices WHERE user_id='%s';", userId);
+				resultSet = sqlHandler.selectDeviceByUserId(query);
+			}
+
 			List<Device> devices = new ArrayList<>();
 
 			while (resultSet.next()) {
@@ -357,18 +366,22 @@ public class ApiTransmitter {
 						therm.setLevel(level);
 						devices.add(therm);
 					}
-					default -> {
-						outputStream.writeBytes("status code: 350-" + null + "\r\n");
-					}
+					default -> outputStream.writeBytes("status code: 350-" + null + "\r\n");
 				}
 			}
 
-			transmit(devices, outputStream, cryptoHandler, logger);
+			if(checker) {
+				// devices being "null" or "not"
+				transmit(devices, outputStream, cryptoHandler, logger);
+			}
+			return devices;
+
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 
-
+		return null;
 	}
 
 

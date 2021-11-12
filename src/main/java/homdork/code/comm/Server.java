@@ -1,6 +1,7 @@
 package homdork.code.comm;
 
 import homdork.code.data.SQLHandler;
+import homdork.code.model.Device;
 import homdork.code.security.CryptoHandler;
 
 import java.io.*;
@@ -8,8 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,12 +72,12 @@ public class Server extends Thread {
 		do {
 			try {
 				String encryptedMessage = bis.readLine();
-                byte[] byteArray = new byte[0];
-                try {
-                    byteArray = encryptedMessage.getBytes(StandardCharsets.UTF_8);
-                } catch (Exception e) {
-                    logger.severe(e.getMessage());
-                }
+				byte[] byteArray = new byte[0];
+				try {
+					byteArray = encryptedMessage.getBytes(StandardCharsets.UTF_8);
+				} catch (Exception e) {
+					logger.severe(e.getMessage());
+				}
 
 				cryptoHandler.setUpCipher();
 				//Decrypt encryptedMessage and print it
@@ -125,7 +125,7 @@ public class Server extends Thread {
 						if(!message.contains("user_id"))
 							ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 						else
-							ApiTransmitter.getUserDevices(message, outputStream, sqlHandler, cryptoHandler, logger);
+							ApiTransmitter.getUserDevices(message, outputStream, sqlHandler, cryptoHandler, logger, true);
 
 					} else if(message.contains("UPDATE") && message.contains("devices")) {
 						logger.log(Level.INFO, "UPDATE DEVICE HANDLER");
@@ -138,41 +138,62 @@ public class Server extends Thread {
 						// returns deviceId, hubAddress and level of updated device
 						String[] parts = ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 						outputStream.flush();
-						assert parts != null;
-						double level = Double.parseDouble(parts[1]);
-						String hubAddress = parts[2];
-						String pinNumber = parts[3];
-						String deviceType = parts[4];
+						try {
+							assert parts != null;
+							double level = Double.parseDouble(parts[1]);
+							String hubAddress = parts[2];
+							String pinNumber = parts[3];
+							String deviceType = parts[4];
+						} catch (Exception e) {
+							logger.severe(e.getMessage());
+						}
 
 
-                        // communication with local hub
-						HubClient hubClient = new HubClient();
-						hubClient.transmit(message,pinNumber,hubAddress,level,deviceType, logger);
+						// communication with local hub
+						/*HubClient hubClient = new HubClient();
+						hubClient.transmit(message, pinNumber, hubAddress, level, deviceType, logger);*/
 
-					} else if(message.contains("INSERT") && message.contains("devices")) {
-						// 12 pin
-						// 0 - 3 _ FAN
-						// 4 - 7 _ LAMP
-						// 8 - 12 THERM
-
-						// gen device id
-						// select "type"  === "FAN"  - {type,userId}
-						//      - select * from devices where deviceTYpe = FAN AND userID=userId      @queryBuilder
-						//			 order devices by pins
-						//      - FANS : 0 -3
-						// 			 loop i = 0 - 3, if i != get(index).pin   --> return i else return -1
-
-						// let hub know there is a new device ??? not needed
+					} else if(message.contains("FREE-PIN")) {
 						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
+						// FREE PINS 27,28,29
+						List<Integer> pins = new ArrayList<>();
+						pins.add(27);
+						pins.add(28);
+						pins.add(29);
 
-						//update user[1]
-						message = message.replace("ppp", "pinNr");
-						message = message.replace("ddd", "deviceId");
-						sqlHandler.updateHandler(message); // modified message for pin
-						logger.log(Level.INFO, "INSERT DEVICE QUERY SENT");
+						String[] parts = message.split(" ");
+						String userId = parts[1];
+						String deviceType = parts[2];
 
-						//select new saved device in [1] and write to output stream
-						ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
+						List<Device> devices = ApiTransmitter.getUserDevices(message, outputStream, sqlHandler, cryptoHandler, logger, false);
+
+						for(int i = 0; i < Objects.requireNonNull(devices).size(); i++) {
+							for(int j = 0; j < pins.size(); j++) {
+								if(devices.get(i).getPin() == pins.get(j)) {
+									pins.remove(pins.get(j));
+								}
+							}
+						}
+
+						String freePin;
+						if(pins.size() == 0) {
+							outputStream.writeBytes("status code: 350-" + null + "\r\n");
+						} else {
+							freePin = pins.get(0).toString();
+							outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(freePin) + "\r\n");
+
+							String deviceId = gen();
+							String hubAddress = devices.get(0).getHubAddress();
+
+							// insert into devices(id,type,users_id,level,hubAddress,pin,state) values("1111","LAMP","34341",0,"194.47.44.225",11,’OFF’);
+							String query = String.format("INSERT into devices(id,type,user_id,level,hub_address,pin,state) VALUES('%s','%s','%s'," + 0.0 + ",'%s'," + Integer.parseInt(freePin) + ",'OFF');", deviceId, deviceType, userId, hubAddress);
+							System.out.println(query);
+							sqlHandler.updateHandler(query); // insert new device in DB
+							logger.log(Level.INFO, "INSERT NEW DEVICE QUERY SENT");
+
+						/*	HubClient hubClient = new HubClient();
+							hubClient.transmit(message, freePin, hubAddress, 0.0, deviceType, logger);*/
+						}
 					}
 				} else {
 					// client = Local Hub
@@ -190,5 +211,10 @@ public class Server extends Thread {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 		} while (running);
+	}
+
+	public String gen() {
+		Random r = new Random(System.currentTimeMillis());
+		return String.valueOf(((1 + r.nextInt(2)) * 10000 + r.nextInt(10000)));
 	}
 }

@@ -15,7 +15,7 @@ import java.security.cert.CertificateException;
  * This class loads the server pub. and private keys from a keystore.
  */
 public class KeyLoader {
-    static SecretKey loader() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableEntryException, CertificateException {
+    static SecretKey loader() throws KeyStoreException, IOException, NoSuchAlgorithmException, UnrecoverableEntryException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance("JCEKS");
 
         // load key store
