@@ -171,7 +171,7 @@ public class Server extends Thread {
 
 						for(int i = 0; i < Objects.requireNonNull(devices).size(); i++) {
 							for(int j = 0; j < pins.size(); j++) {
-								if(devices.get(i).getPin() == pins.get(j)) {
+								if(Objects.equals(devices.get(i).getPin(), pins.get(j).toString())) {
 									pins.remove(pins.get(j));
 								}
 							}

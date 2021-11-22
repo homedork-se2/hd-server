@@ -149,12 +149,12 @@ public class ApiTransmitter {
 				double level = resultSet.getDouble("level");
 				// new
 				String hubAddress = resultSet.getString("hub_address");
-				int pin = resultSet.getInt("pin");
+				String pin = resultSet.getString("pin");
 
 				parts[0] = deviceId;
 				parts[1] = String.valueOf(((int) level));
 				parts[2] = hubAddress;
-				parts[3] = String.valueOf(pin);
+				parts[3] = pin;
 				parts[4] = type;
 
 
@@ -230,7 +230,7 @@ public class ApiTransmitter {
 						if(state.equals("OPEN")) {
 							window.setState(State.OPEN);
 						} else {
-							window.setState(State.CLOSE);
+							window.setState(State.CLOSED);
 						}
 						window.setLevel(level);
 						transmit(window, outputStream, cryptoHandler, logger);
@@ -331,7 +331,7 @@ public class ApiTransmitter {
 				double level = resultSet.getDouble("level");
 				// new
 				String hubAddress = resultSet.getString("hub_address");
-				int pin = resultSet.getInt("pin");
+				String pin = resultSet.getString("pin");
 
 
 				switch (type) {
@@ -406,10 +406,10 @@ public class ApiTransmitter {
 						if(state.equals("OPEN")) {
 							window.setState(State.OPEN);
 						} else {
-							window.setState(State.CLOSE);
+							window.setState(State.CLOSED);
 						}
 						window.setLevel(level);
-						transmit(window, outputStream, cryptoHandler, logger);
+						devices.add(window);
 					}
 					case "ALARM" -> {
 						Alarm alarm = new Alarm(deviceId);
@@ -424,7 +424,7 @@ public class ApiTransmitter {
 							alarm.setState(State.OFF);
 						}
 						alarm.setLevel(level);
-						transmit(alarm, outputStream, cryptoHandler, logger);
+						devices.add(alarm);
 					}
 					default -> outputStream.writeBytes("status code: 350-" + null + "\r\n");
 				}
