@@ -138,20 +138,21 @@ public class Server extends Thread {
 						// returns deviceId, hubAddress and level of updated device
 						String[] parts = ApiTransmitter.retrieveReturnDevice(message, outputStream, sqlHandler, cryptoHandler, logger);
 						outputStream.flush();
+						String pinNumber = null, hubAddress = null, deviceType = null;
+						double level = 0;
 						try {
 							assert parts != null;
-							double level = Double.parseDouble(parts[1]);
-							String hubAddress = parts[2];
-							String pinNumber = parts[3];
-							String deviceType = parts[4];
+							level = Double.parseDouble(parts[1]);
+							hubAddress = parts[2];
+							pinNumber = parts[3];
+							deviceType = parts[4];
 						} catch (Exception e) {
 							logger.severe(e.getMessage());
 						}
 
-
 						// communication with local hub
-						/*HubClient hubClient = new HubClient();
-						hubClient.transmit(message, pinNumber, hubAddress, level, deviceType, logger);*/
+						HubClient hubClient = new HubClient();
+						hubClient.transmit(message, pinNumber, hubAddress, level, deviceType, logger);
 
 					} else if(message.contains("FREE-PIN")) {
 						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
@@ -165,7 +166,8 @@ public class Server extends Thread {
 						String userId = parts[1];
 						String deviceType = parts[2];
 
-						List<Device> devices = ApiTransmitter.getUserDevices(message, outputStream, sqlHandler, cryptoHandler, logger, false);
+						List<Device> devices = ApiTransmitter.
+								getUserDevices(message, outputStream, sqlHandler, cryptoHandler, logger, false);
 
 						for(int i = 0; i < Objects.requireNonNull(devices).size(); i++) {
 							for(int j = 0; j < pins.size(); j++) {
@@ -186,13 +188,14 @@ public class Server extends Thread {
 							String hubAddress = devices.get(0).getHubAddress();
 
 							// insert into devices(id,type,users_id,level,hubAddress,pin,state) values("1111","LAMP","34341",0,"194.47.44.225",11,’OFF’);
-							String query = String.format("INSERT into devices(id,type,user_id,level,hub_address,pin,state) VALUES('%s','%s','%s'," + 0.0 + ",'%s'," + Integer.parseInt(freePin) + ",'OFF');", deviceId, deviceType, userId, hubAddress);
+							String query = String.format("INSERT into devices(id,type,user_id,level,hub_address,pin,state) VALUES('%s','%s','%s'," + 0.0 + ",'%s',"
+									+ Integer.parseInt(freePin) + ",'OFF');", deviceId, deviceType, userId, hubAddress);
 							System.out.println(query);
 							sqlHandler.updateHandler(query); // insert new device in DB
 							logger.log(Level.INFO, "INSERT NEW DEVICE QUERY SENT");
 
-						/*	HubClient hubClient = new HubClient();
-							hubClient.transmit(message, freePin, hubAddress, 0.0, deviceType, logger);*/
+							HubClient hubClient = new HubClient();
+							hubClient.transmit(message, freePin, hubAddress, 0.0, deviceType, logger);
 						}
 					}
 				} else {

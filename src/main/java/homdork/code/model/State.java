@@ -1,5 +1,5 @@
 package homdork.code.model;
 
 public enum State {
-	OFF, ON
+	OFF, ON, OPEN, CLOSE
 }

@@ -167,9 +167,9 @@ public class ApiTransmitter {
 						fan.setPin(pin);
 						fan.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							fan.setState(homdork.code.model.State.ON);
+							fan.setState(State.ON);
 						} else {
-							fan.setState(homdork.code.model.State.OFF);
+							fan.setState(State.OFF);
 						}
 						fan.setLevel(level);
 						transmit(fan, outputStream, cryptoHandler, logger);
@@ -183,9 +183,9 @@ public class ApiTransmitter {
 						lamp.setPin(pin);
 						lamp.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							lamp.setState(homdork.code.model.State.ON);
+							lamp.setState(State.ON);
 						} else {
-							lamp.setState(homdork.code.model.State.OFF);
+							lamp.setState(State.OFF);
 						}
 						lamp.setLevel(level);
 						transmit(lamp, outputStream, cryptoHandler, logger);
@@ -198,9 +198,9 @@ public class ApiTransmitter {
 						curtain.setPin(pin);
 						curtain.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							curtain.setState(homdork.code.model.State.ON);
+							curtain.setState(State.ON);
 						} else {
-							curtain.setState(homdork.code.model.State.OFF);
+							curtain.setState(State.OFF);
 						}
 						curtain.setLevel(level);
 						transmit(curtain, outputStream, cryptoHandler, logger);
@@ -213,12 +213,42 @@ public class ApiTransmitter {
 						therm.setUserId(userID);
 						therm.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							therm.setState(homdork.code.model.State.ON);
+							therm.setState(State.ON);
 						} else {
-							therm.setState(homdork.code.model.State.OFF);
+							therm.setState(State.OFF);
 						}
 						therm.setLevel(level);
 						transmit(therm, outputStream, cryptoHandler, logger);
+					}
+					case "WINDOW" -> {
+						Window window = new Window(deviceId);
+						window.setDeviceType(DeviceType.WINDOW);
+						window.setId(deviceId);
+						window.setPin(pin);
+						window.setUserId(userID);
+						window.setHubAddress(hubAddress);
+						if(state.equals("OPEN")) {
+							window.setState(State.OPEN);
+						} else {
+							window.setState(State.CLOSE);
+						}
+						window.setLevel(level);
+						transmit(window, outputStream, cryptoHandler, logger);
+					}
+					case "ALARM" -> {
+						Alarm alarm = new Alarm(deviceId);
+						alarm.setDeviceType(DeviceType.ALARM);
+						alarm.setId(deviceId);
+						alarm.setPin(pin);
+						alarm.setUserId(userID);
+						alarm.setHubAddress(hubAddress);
+						if(state.equals("ON")) {
+							alarm.setState(State.ON);
+						} else {
+							alarm.setState(State.OFF);
+						}
+						alarm.setLevel(level);
+						transmit(alarm, outputStream, cryptoHandler, logger);
 					}
 					default -> outputStream.writeBytes("status code: 350-" + null + "\r\n");
 				}
@@ -329,9 +359,9 @@ public class ApiTransmitter {
 						lamp.setPin(pin);
 						lamp.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							lamp.setState(homdork.code.model.State.ON);
+							lamp.setState(State.ON);
 						} else {
-							lamp.setState(homdork.code.model.State.OFF);
+							lamp.setState(State.OFF);
 						}
 						lamp.setLevel(level);
 						devices.add(lamp);
@@ -344,9 +374,9 @@ public class ApiTransmitter {
 						curtain.setPin(pin);
 						curtain.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							curtain.setState(homdork.code.model.State.ON);
+							curtain.setState(State.ON);
 						} else {
-							curtain.setState(homdork.code.model.State.OFF);
+							curtain.setState(State.OFF);
 						}
 						curtain.setLevel(level);
 						devices.add(curtain);
@@ -359,12 +389,42 @@ public class ApiTransmitter {
 						therm.setUserId(userID);
 						therm.setHubAddress(hubAddress);
 						if(state.equals("ON")) {
-							therm.setState(homdork.code.model.State.ON);
+							therm.setState(State.ON);
 						} else {
-							therm.setState(homdork.code.model.State.OFF);
+							therm.setState(State.OFF);
 						}
 						therm.setLevel(level);
 						devices.add(therm);
+					}
+					case "WINDOW" -> {
+						Window window = new Window(deviceId);
+						window.setDeviceType(DeviceType.WINDOW);
+						window.setId(deviceId);
+						window.setPin(pin);
+						window.setUserId(userID);
+						window.setHubAddress(hubAddress);
+						if(state.equals("OPEN")) {
+							window.setState(State.OPEN);
+						} else {
+							window.setState(State.CLOSE);
+						}
+						window.setLevel(level);
+						transmit(window, outputStream, cryptoHandler, logger);
+					}
+					case "ALARM" -> {
+						Alarm alarm = new Alarm(deviceId);
+						alarm.setDeviceType(DeviceType.ALARM);
+						alarm.setId(deviceId);
+						alarm.setPin(pin);
+						alarm.setUserId(userID);
+						alarm.setHubAddress(hubAddress);
+						if(state.equals("ON")) {
+							alarm.setState(State.ON);
+						} else {
+							alarm.setState(State.OFF);
+						}
+						alarm.setLevel(level);
+						transmit(alarm, outputStream, cryptoHandler, logger);
 					}
 					default -> outputStream.writeBytes("status code: 350-" + null + "\r\n");
 				}

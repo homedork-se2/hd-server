@@ -24,7 +24,7 @@
 * Encrypted TCP channels for communication to both API and local hub.
 * ### Project dependencies
   > | Dependency                                                                       | Use                  |
-    > |----------------------------------------------------------------------------------|----------------------|
+  > |----------------------------------------------------------------------------------|----------------------|
   > | [MYSQL connector](https://mvnrepository.com/artifact/mysql/mysql-connector-java) | Database             |
   > | [JUNIT](https://mvnrepository.com/artifact/junit/junit)                          | Junit test framework |
   > | [GSON](https://mvnrepository.com/artifact/com.google.code.gson/gson)             | JSON parsing         |
@@ -38,7 +38,7 @@
 * ### SERVER ARCHITECTURE
   > ![img_2.png](resources/server-architecture.png)
   >
-  > Overview of the current's server architecture without encryption/decryption layers added.
+  > Overview of the current's server architecture.
 >
 * ### COMMUNICATION DESIGN
   > ![img.png](resources/img.png)
