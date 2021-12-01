@@ -52,7 +52,7 @@ public class ApiTransmitter {
 			System.out.println(json);
 			outputStream.writeBytes("status code: 200-" + cryptoHandler.aesEncrypt(json) + "\r\n");
 			outputStream.flush();
-			logger.log(Level.INFO, "DEVICE LIST SENT TO API");
+			logger.log(Level.INFO, "DEVICES LIST SENT TO API");
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
 		}
@@ -333,7 +333,6 @@ public class ApiTransmitter {
 				String hubAddress = resultSet.getString("hub_address");
 				String pin = resultSet.getString("pin");
 
-
 				switch (type) {
 					case "FAN" -> {
 						Fan fan = new Fan(deviceId);
@@ -430,12 +429,11 @@ public class ApiTransmitter {
 				}
 			}
 
-			if(checker) {
-				// devices being "null" or "not"
-				transmit(devices, outputStream, cryptoHandler, logger);
-			}
-			return devices;
-
+            if (checker) {
+                // devices being "null" or "not"
+                transmit(devices, outputStream, cryptoHandler, logger);
+            } else
+                return devices;
 
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());

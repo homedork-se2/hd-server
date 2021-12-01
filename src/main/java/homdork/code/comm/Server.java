@@ -151,9 +151,9 @@ public class Server extends Thread {
 						}
 
 						// communication with local hub
-						HubClient hubClient = new HubClient();
+					/*	HubClient hubClient = new HubClient();
 						hubClient.transmit(message, pinNumber, hubAddress, level, deviceType, logger);
-
+					*/
 					} else if(message.contains("FREE-PIN")) {
 						logger.log(Level.INFO, "INSERT DEVICE HANDLER");
 						// FREE PINS 27,28,29
@@ -194,8 +194,8 @@ public class Server extends Thread {
 							sqlHandler.updateHandler(query); // insert new device in DB
 							logger.log(Level.INFO, "INSERT NEW DEVICE QUERY SENT");
 
-							HubClient hubClient = new HubClient();
-							hubClient.transmit(message, freePin, hubAddress, 0.0, deviceType, logger);
+							/*HubClient hubClient = new HubClient();
+							hubClient.transmit(message, freePin, hubAddress, 0.0, deviceType, logger);*/
 						}
 					}
 				} else {
