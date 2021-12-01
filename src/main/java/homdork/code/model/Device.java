@@ -1,12 +1,12 @@
 package homdork.code.model;
 
-public abstract class Device {
+public class Device {
 	public String id;
 	public State state;  // "on" and "off" for all device types.
 	public DeviceType deviceType;  // "LAMP","FAN" , "THERMOMETER", "CURTAIN" ...
 	public String userId;
 	public double level;  // brightness : Lamp[ceiling + floor] . Speed : Fan . Warmth : Thermometer
-	public int pin;
+	public String pin;
 	public String hubAddress;
 
 	public DeviceType getDeviceType() {
@@ -66,14 +66,16 @@ public abstract class Device {
 				", deviceType=" + deviceType +
 				", userId='" + userId + '\'' +
 				", level=" + level +
+				", pin='" + pin + '\'' +
+				", hubAddress='" + hubAddress + '\'' +
 				'}';
 	}
 
-	public int getPin() {
+	public String getPin() {
 		return pin;
 	}
 
-	public void setPin(int pin) {
+	public void setPin(String pin) {
 		this.pin = pin;
 	}
 
