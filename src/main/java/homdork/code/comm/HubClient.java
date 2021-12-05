@@ -48,7 +48,11 @@ public class HubClient {
 			} else if(message.contains("state='ON'")) {
 				m = String.format("'%s':'%s':ON", deviceType, pinNumber);
 			} else if(message.contains("FREE-PIN")) {
+				// ND - New Device
 				m = String.format("ND:'%s':'%s'", deviceType, pinNumber);
+			}else if(message.contains("DELETE")){
+				// RD - Remove Device
+				m = String.format("RD:'%s':'%s'", deviceType, pinNumber);
 			}
 
 			assert m != null;
