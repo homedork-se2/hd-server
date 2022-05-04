@@ -23,7 +23,7 @@ public class SQLConnector {
     public Connection connect() {
         if (connection == null) {
             try {
-                String database = "mydb", portNumber = "3306", username = "root", password = "Elev6477";
+                String database = "mydb", portNumber = "3306", username = "xxxx", password = "xxxxxx";
                 String mySql = "jdbc:mysql://localhost:" + portNumber + "/" + database + "?user=" + username + "&password=" + password + "&serverTimezone=UTC";
                 String lite = "jdbc:sqlite://Users/willz/homedork4.db";
                 connection = DriverManager.getConnection(lite);
